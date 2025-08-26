@@ -2,7 +2,7 @@ import { describe, test, expect } from "@jest/globals";
 import { Gameboard } from "./Gameboard.js";
 import { Ship } from "./Ship.js";
 
-describe("Gameboard", () => {
+describe("Gameboard, initilization", () => {
   test("should have board property", () => {
     const gameboard = new Gameboard();
     expect(gameboard).toHaveProperty("board");
@@ -22,7 +22,9 @@ describe("Gameboard", () => {
       expect(gameboard.board[i].length).toBe(10);
     }
   });
+});
 
+describe("Gameboard, placeShip function", () => {
   test("should successfully place a ship of length 2 at [0,0] horizontally", () => {
     const ship = new Ship(2);
     const gameboard = new Gameboard();
@@ -79,5 +81,56 @@ describe("Gameboard", () => {
 });
 
 describe("GameBoard, receiveAttack function", () => {
-  return;
+  test("attacking an empty square returns false (miss)", () => {
+    const gameboard = new Gameboard();
+
+    expect(gameboard.receiveAttack([0, 0])).toBe(false);
+    expect(gameboard.board[0][0]).toBe(null);
+  });
+
+  test("attacking a ship returns true (hit) and calls ship.hit()", () => {
+    const gameboard = new Gameboard();
+    const ship = new Ship(3);
+    gameboard.placeShip(ship, [0, 0], "horizontal");
+
+    expect(gameboard.receiveAttack([0, 0])).toBe(true);
+    expect(ship.hits).toBe(1);
+    expect(gameboard.board[0][0]).toBe(ship);
+  });
+
+  test("missed attack coordinates should be stored in misses Set", () => {
+    const gameboard = new Gameboard();
+
+    expect(gameboard.receiveAttack([0, 0])).toBe(false);
+    expect(gameboard.board[0][0]).toBe(null);
+    expect(gameboard.misses.has("0,0")).toBe(true);
+  });
+
+  test("successful attack coordinates should be stored in hits Set", () => {
+    const gameboard = new Gameboard();
+    const ship = new Ship(3);
+    gameboard.placeShip(ship, [0, 0], "horizontal");
+
+    expect(gameboard.receiveAttack([0, 0])).toBe(true);
+    expect(ship.hits).toBe(1);
+    expect(gameboard.board[0][0]).toBe(ship);
+    expect(gameboard.hits.has("0,0")).toBe(true);
+  });
+
+  test("duplicate attacks on an already missed attack coordinate should not register", () => {
+    const gameboard = new Gameboard();
+
+    gameboard.receiveAttack([0, 0]);
+    expect(gameboard.receiveAttack([0, 0])).toBe("already-attacked");
+  });
+
+  test("duplicate attacks on an already successful attack coordinate should not register", () => {
+    const gameboard = new Gameboard();
+    const ship = new Ship(3);
+    gameboard.placeShip(ship, [0, 0], "horizontal");
+
+    gameboard.receiveAttack([0, 0]);
+    expect(gameboard.receiveAttack([0, 0])).toBe("already-attacked");
+    expect(ship.hits).toBe(1);
+  });
 });

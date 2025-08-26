@@ -7,6 +7,9 @@ class Gameboard {
         this.board[i][j] = null;
       }
     }
+
+    this.misses = new Set();
+    this.hits = new Set();
   }
 
   placeShip(ship, coordinate, direction) {
@@ -45,6 +48,25 @@ class Gameboard {
       }
     }
     return true;
+  }
+
+  receiveAttack(coordinate) {
+    const row = coordinate[0];
+    const column = coordinate[1];
+
+    const stringCoordinate = `${row},${column}`;
+    if (this.hits.has(stringCoordinate) || this.misses.has(stringCoordinate)) {
+      return "already-attacked";
+    }
+
+    if (this.board[row][column] === null) {
+      this.misses.add(`${row},${column}`);
+      return false;
+    } else {
+      this.board[row][column].hit();
+      this.hits.add(`${row},${column}`);
+      return true;
+    }
   }
 }
 
