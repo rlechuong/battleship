@@ -25,7 +25,7 @@ describe("Gameboard", () => {
     });
   });
 
-  describe("placeShip", () => {
+  describe("placeShip()", () => {
     test("should successfully place a ship of length 2 at [0,0] horizontally", () => {
       const ship = new Ship(2);
       const gameboard = new Gameboard();
@@ -154,6 +154,61 @@ describe("Gameboard", () => {
       gameboard.receiveAttack([0, 0]);
       expect(gameboard.receiveAttack([0, 0])).toBe("already-attacked");
       expect(ship.hits).toBe(1);
+    });
+  });
+
+  describe("allShipsSunk()", () => {
+    test("should return false if no ships placed", () => {
+      const gameboard = new Gameboard();
+      expect(gameboard.allShipsSunk()).toBe(false);
+    });
+
+    test("should return false if a ship placed, but not sunk", () => {
+      const gameboard = new Gameboard();
+      const ship = new Ship(3);
+
+      gameboard.placeShip(ship, [0, 0], "horizontal");
+      expect(gameboard.allShipsSunk()).toBe(false);
+    });
+
+    test("should return true if a ship placed and then sunk", () => {
+      const gameboard = new Gameboard();
+      const ship = new Ship(3);
+
+      gameboard.placeShip(ship, [0, 0], "horizontal");
+      gameboard.receiveAttack([0, 0]);
+      gameboard.receiveAttack([0, 1]);
+      gameboard.receiveAttack([0, 2]);
+      expect(gameboard.allShipsSunk()).toBe(true);
+    });
+
+    test("should return false if multiple ship placed, but not all sunk", () => {
+      const gameboard = new Gameboard();
+      const ship = new Ship(3);
+      const ship2 = new Ship(3);
+
+      gameboard.placeShip(ship, [0, 0], "horizontal");
+      gameboard.placeShip(ship2, [1, 0], "horizontal");
+      gameboard.receiveAttack([0, 0]);
+      gameboard.receiveAttack([0, 1]);
+      gameboard.receiveAttack([0, 2]);
+      expect(gameboard.allShipsSunk()).toBe(false);
+    });
+
+    test("should return true if multiple ships placed and all ships are sunk", () => {
+      const gameboard = new Gameboard();
+      const ship = new Ship(3);
+      const ship2 = new Ship(3);
+
+      gameboard.placeShip(ship, [0, 0], "horizontal");
+      gameboard.placeShip(ship2, [1, 0], "horizontal");
+      gameboard.receiveAttack([0, 0]);
+      gameboard.receiveAttack([0, 1]);
+      gameboard.receiveAttack([0, 2]);
+      gameboard.receiveAttack([1, 0]);
+      gameboard.receiveAttack([1, 1]);
+      gameboard.receiveAttack([1, 2]);
+      expect(gameboard.allShipsSunk()).toBe(true);
     });
   });
 });

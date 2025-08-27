@@ -71,6 +71,18 @@ class Gameboard {
       return true;
     }
   }
+
+  allShipsSunk() {
+    if (this.ships.length === 0) {
+      return false;
+    }
+
+    const allShipsSunk = this.ships.every(function (ship) {
+      return ship.isSunk();
+    });
+
+    return allShipsSunk;
+  }
 }
 
 export { Gameboard };
