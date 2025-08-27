@@ -10,6 +10,7 @@ class Gameboard {
 
     this.misses = new Set();
     this.hits = new Set();
+    this.ships = [];
   }
 
   placeShip(ship, coordinate, direction) {
@@ -20,11 +21,11 @@ class Gameboard {
       return false;
     }
 
-    if (direction === "horizontal" && column + ship.length > 9) {
+    if (direction === "horizontal" && column + ship.length > 10) {
       return false;
     }
 
-    if (direction === "vertical" && row + ship.length > 9) {
+    if (direction === "vertical" && row + ship.length > 10) {
       return false;
     }
 
@@ -39,6 +40,8 @@ class Gameboard {
         }
       }
     }
+
+    this.ships.push(ship);
 
     for (let i = 0; i < ship.length; i++) {
       if (direction === "horizontal") {
