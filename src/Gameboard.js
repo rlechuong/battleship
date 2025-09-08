@@ -13,9 +13,9 @@ class Gameboard {
     this.ships = [];
   }
 
-  placeShip(ship, coordinate, direction) {
-    const row = coordinate[0];
-    const column = coordinate[1];
+  placeShip(ship, coordinates, direction) {
+    const row = coordinates[0];
+    const column = coordinates[1];
 
     if (row > 9 || column > 9) {
       return false;
@@ -53,9 +53,9 @@ class Gameboard {
     return true;
   }
 
-  receiveAttack(coordinate) {
-    const row = coordinate[0];
-    const column = coordinate[1];
+  receiveAttack(coordinates) {
+    const row = coordinates[0];
+    const column = coordinates[1];
 
     const stringCoordinate = `${row},${column}`;
     if (this.hits.has(stringCoordinate) || this.misses.has(stringCoordinate)) {
