@@ -97,4 +97,133 @@ describe("Game", () => {
       expect(game.winner).toBe(game.currentPlayer);
     });
   });
+
+  describe("processTurn()", () => {
+    test("should handle computer attack", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != computerPlayer) {
+        game.switchTurn();
+      }
+
+      const ship = new Ship(3);
+      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+      const initialOpponent = game.opponent;
+
+      expect([true, false]).toContain(game.processTurn());
+      expect(
+        initialOpponent.gameboard.hits.size +
+          initialOpponent.gameboard.misses.size,
+      ).toBe(1);
+      expect(game.currentPlayer).toBe(initialOpponent);
+    });
+
+    test("should handle real (human) attack", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != realPlayer) {
+        game.switchTurn();
+      }
+
+      const initialOpponent = game.opponent;
+
+      expect([true, false]).toContain(game.processTurn([0, 0]));
+      expect(
+        initialOpponent.gameboard.hits.size +
+          initialOpponent.gameboard.misses.size,
+      ).toBe(1);
+      expect(game.currentPlayer).toBe(initialOpponent);
+    });
+
+    test("should detect when all opponent's ships sunk and game is over", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != realPlayer) {
+        game.switchTurn();
+      }
+
+      const ship = new Ship(3);
+      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+
+      game.opponent.gameboard.receiveAttack([0, 0]);
+      game.opponent.gameboard.receiveAttack([0, 1]);
+
+      expect([true, false]).toContain(game.processTurn([0, 2]));
+      expect(game.gameState).toBe("ended");
+      expect(game.winner).toBe(realPlayer);
+    });
+
+    test("should switch turns after a successful attack that hits", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != realPlayer) {
+        game.switchTurn();
+      }
+
+      const ship = new Ship(3);
+      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+
+      expect(game.processTurn([0, 0])).toBe(true);
+      expect(game.currentPlayer).toBe(computerPlayer);
+    });
+
+    test("should switch turns after a successful attack that misses", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != realPlayer) {
+        game.switchTurn();
+      }
+
+      const ship = new Ship(3);
+      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+
+      expect(game.processTurn([9, 9])).toBe(false);
+      expect(game.currentPlayer).toBe(computerPlayer);
+    });
+
+    test("should not switch turns if trying to attack an already attacked square", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != realPlayer) {
+        game.switchTurn();
+      }
+
+      game.opponent.gameboard.receiveAttack([0, 0]);
+
+      expect(game.processTurn([0, 0])).toBe("already-attacked");
+      expect(game.currentPlayer).toBe(realPlayer);
+    });
+
+    test("should throw error if computer attacks full board", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      if (game.currentPlayer != computerPlayer) {
+        game.switchTurn();
+      }
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          game.opponent.gameboard.receiveAttack([i, j]);
+        }
+      }
+
+      expect(() => game.processTurn()).toThrow(
+        "Error: Invalid Game State: All Squares Attacked, Game Should Have Ended",
+      );
+    });
+  });
 });
