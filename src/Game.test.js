@@ -226,4 +226,165 @@ describe("Game", () => {
       );
     });
   });
+
+  describe("Game Integration Testing", () => {
+    test("should play through a game with one ship per player correctly", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+      const game = new Game(realPlayer, computerPlayer);
+
+      const realPlayerShip = new Ship(3);
+      const computerPlayerShip = new Ship(3);
+
+      if (game.currentPlayer != realPlayer) {
+        game.switchTurn();
+      }
+
+      game.currentPlayer.gameboard.placeShip(
+        realPlayerShip,
+        [0, 0],
+        "horizontal",
+      );
+      game.opponent.gameboard.placeShip(
+        computerPlayerShip,
+        [0, 0],
+        "horizontal",
+      );
+
+      expect(game.currentPlayer).toBe(realPlayer);
+      expect([true, false]).toContain(game.processTurn([0, 0]));
+      expect(game.currentPlayer).toBe(computerPlayer);
+      expect([true, false]).toContain(game.processTurn());
+      expect(game.currentPlayer).toBe(realPlayer);
+      expect([true, false]).toContain(game.processTurn([0, 1]));
+      expect(game.currentPlayer).toBe(computerPlayer);
+      expect([true, false]).toContain(game.processTurn());
+      expect(game.currentPlayer).toBe(realPlayer);
+      expect([true, false]).toContain(game.processTurn([0, 2]));
+      expect(game.currentPlayer).toBe(realPlayer);
+      expect(game.opponent.gameboard.allShipsSunk()).toBe(true);
+      expect(game.gameState).toBe("ended");
+      expect(game.winner).toBe(realPlayer);
+    });
+  });
+
+  describe("placePlayerShip()", () => {
+    test("should place ship with valid parameters", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
+      ).toBe(true);
+      expect(realPlayer1.gameboard.board[0][0]).toBeInstanceOf(Ship);
+      expect(realPlayer1.gameboard.board[0][4]).toBeInstanceOf(Ship);
+      expect(game.player1UnplacedShips).not.toContain("Carrier");
+      expect(game.player1UnplacedShips.length).toBe(4);
+    });
+
+    test("should place ship for second player with valid parameters", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(
+        game.placePlayerShip(
+          computerPlayer2,
+          "Battleship",
+          [3, 6],
+          "horizontal",
+        ),
+      ).toBe(true);
+      expect(computerPlayer2.gameboard.board[3][6]).toBeInstanceOf(Ship);
+      expect(computerPlayer2.gameboard.board[3][9]).toBeInstanceOf(Ship);
+      expect(game.player2UnplacedShips).not.toContain("Battleship");
+      expect(game.player2UnplacedShips.length).toBe(4);
+    });
+
+    test("should throw error if invalid player parameter", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(() => {
+        game.placePlayerShip(null, "Carrier", [0, 0], "horizontal");
+      }).toThrow("Invalid Player.");
+    });
+
+    test("should return false if invalid ship name", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Invalid", [0, 0], "horizontal"),
+      ).toBe(false);
+      expect(realPlayer1.gameboard.board[0][0]).toBe(null);
+      expect(game.player1UnplacedShips.length).toBe(5);
+    });
+
+    test("should return false if trying to place an already placed ship", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
+      ).toBe(true);
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
+      ).toBe(false);
+
+      expect(game.player1UnplacedShips).not.toContain("Carrier");
+      expect(game.player1UnplacedShips.length).toBe(4);
+      expect(realPlayer1.gameboard.ships.length).toBe(1);
+    });
+
+    test("should return false if trying to place ship on out of bounds coordinates", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Carrier", [9, 9], "horizontal"),
+      ).toBe(false);
+      expect(game.player1UnplacedShips).toContain("Carrier");
+      expect(realPlayer1.gameboard.ships.length).toBe(0);
+    });
+
+    test("should return false if trying to place ship on occupied coordinates", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
+      ).toBe(true);
+      expect(
+        game.placePlayerShip(realPlayer1, "Battleship", [0, 3], "horizontal"),
+      ).toBe(false);
+      expect(game.player1UnplacedShips).toContain("Battleship");
+      expect(realPlayer1.gameboard.ships.length).toBe(1);
+    });
+
+    test("should return false if trying to place a ship after they have all been placed", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Cruiser", [2, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Submarine", [3, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Destroyer", [4, 0], "horizontal");
+
+      expect(
+        game.placePlayerShip(realPlayer1, "Carrier", [5, 0], "horizontal"),
+      ).toBe(false);
+      expect(game.player1UnplacedShips.length).toBe(0);
+      expect(realPlayer1.gameboard.ships.length).toBe(5);
+    });
+  });
 });

@@ -1,5 +1,23 @@
+import { Ship } from "./Ship";
+
 class Game {
   constructor(player1, player2) {
+    this.player1 = player1;
+    this.player2 = player2;
+    this.player1UnplacedShips = [
+      "Carrier",
+      "Battleship",
+      "Cruiser",
+      "Submarine",
+      "Destroyer",
+    ];
+    this.player2UnplacedShips = [
+      "Carrier",
+      "Battleship",
+      "Cruiser",
+      "Submarine",
+      "Destroyer",
+    ];
     this.currentPlayer = player1;
     this.opponent = player2;
     this.gameState = "running";
@@ -40,6 +58,7 @@ class Game {
 
     if (this.isGameOver()) {
       this.endGame();
+      return result;
     }
 
     if (result === true || result === false) {
@@ -48,6 +67,42 @@ class Game {
 
     return result;
   }
+
+  placePlayerShip(player, shipName, coordinates, direction) {
+    let unplacedShips = this.getUnplacedShips(player);
+    if (!unplacedShips.includes(shipName)) {
+      return false;
+    }
+
+    const ship = SHIP_TYPES[shipName];
+    const success = player.gameboard.placeShip(ship, coordinates, direction);
+
+    if (success) {
+      const index = unplacedShips.indexOf(shipName);
+      unplacedShips.splice(index, 1);
+      return true;
+    }
+
+    return false;
+  }
+
+  getUnplacedShips(player) {
+    if (player === this.player1) {
+      return this.player1UnplacedShips;
+    } else if (player === this.player2) {
+      return this.player2UnplacedShips;
+    } else {
+      throw new Error("Invalid Player.");
+    }
+  }
 }
+
+const SHIP_TYPES = {
+  Carrier: new Ship(5),
+  Battleship: new Ship(4),
+  Cruiser: new Ship(3),
+  Submarine: new Ship(3),
+  Destroyer: new Ship(2),
+};
 
 export { Game };
