@@ -95,6 +95,17 @@ class Game {
       throw new Error("Invalid Player.");
     }
   }
+
+  isPlayerSetupComplete(player) {
+    return this.getUnplacedShips(player).length === 0;
+  }
+
+  canStartGame() {
+    return (
+      this.isPlayerSetupComplete(this.player1) &&
+      this.isPlayerSetupComplete(this.player2)
+    );
+  }
 }
 
 const SHIP_TYPES = {

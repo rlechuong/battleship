@@ -387,4 +387,104 @@ describe("Game", () => {
       expect(realPlayer1.gameboard.ships.length).toBe(5);
     });
   });
+
+  describe("isPlayerSetupComplete()", () => {
+    test("should return true if player has placed all ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Cruiser", [2, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Submarine", [3, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Destroyer", [4, 0], "horizontal");
+
+      expect(game.isPlayerSetupComplete(realPlayer1)).toBe(true);
+    });
+
+    test("should return false if player has placed no ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(game.isPlayerSetupComplete(realPlayer1)).toBe(false);
+    });
+
+    test("should return false if player has only placed some ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Cruiser", [2, 0], "horizontal");
+
+      expect(game.isPlayerSetupComplete(realPlayer1)).toBe(false);
+    });
+  });
+
+  describe("canStartGame()", () => {
+    test("should return true if both players have placed all ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Cruiser", [2, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Submarine", [3, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Destroyer", [4, 0], "horizontal");
+
+      game.placePlayerShip(computerPlayer2, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Cruiser", [2, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Submarine", [3, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Destroyer", [4, 0], "horizontal");
+
+      expect(game.canStartGame()).toBe(true);
+    });
+
+    test("should return false if only first player has placed all ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Cruiser", [2, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Submarine", [3, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Destroyer", [4, 0], "horizontal");
+
+      game.placePlayerShip(computerPlayer2, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Cruiser", [2, 0], "horizontal");
+
+      expect(game.canStartGame()).toBe(false);
+    });
+
+    test("should return false if only second player has placed all ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Cruiser", [2, 0], "horizontal");
+
+      game.placePlayerShip(computerPlayer2, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Battleship", [1, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Cruiser", [2, 0], "horizontal");
+
+      expect(game.canStartGame()).toBe(false);
+    });
+
+    test("should return false if neither player has placed ships", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      expect(game.canStartGame()).toBe(false);
+    });
+  });
 });
