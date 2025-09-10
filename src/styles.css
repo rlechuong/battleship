@@ -66,3 +66,54 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 600px;
+  height: 600px;
+}
+
+.game-board-square {
+  border: 1px solid black;
+  aspect-ratio: 1;
+  position: relative;
+}
+
+.water {
+  background-color: skyblue;
+}
+
+.ship {
+  background-color: lightgrey;
+}
+
+.miss {
+  background-color: skyblue;
+}
+
+.miss::after {
+  content: "•";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: whitesmoke;
+  font-size: 6rem;
+  font-weight: bold;
+}
+
+.hit {
+  background-color: lightgrey;
+}
+
+.hit::after {
+  content: "❌";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+}
