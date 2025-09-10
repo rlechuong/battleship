@@ -38,5 +38,12 @@ leftBoard.appendChild(leftGameBoard);
 const rightBoard = document.querySelector("#right-board");
 rightBoard.appendChild(rightGameBoard);
 
-renderer.updateGameBoard(leftGameBoard, realPlayer1);
-renderer.updateGameBoard(rightGameBoard, computerPlayer2);
+renderer.updateGameBoard(leftGameBoard, realPlayer1, false);
+renderer.updateGameBoard(rightGameBoard, computerPlayer2, true);
+
+renderer.addClickableSquares(
+  leftGameBoard,
+  realPlayer1,
+  rightGameBoard,
+  computerPlayer2,
+);

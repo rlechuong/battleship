@@ -89,6 +89,10 @@ h6 {
   background-color: lightgrey;
 }
 
+.hidden-ship {
+  background-color: skyblue;
+}
+
 .miss {
   background-color: skyblue;
 }
@@ -102,6 +106,7 @@ h6 {
   color: whitesmoke;
   font-size: 6rem;
   font-weight: bold;
+  pointer-events: none;
 }
 
 .hit {
@@ -116,4 +121,5 @@ h6 {
   transform: translate(-50%, -50%);
   font-size: 2rem;
   font-weight: bold;
+  pointer-events: none;
 }

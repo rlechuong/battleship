@@ -22,7 +22,7 @@ class Renderer {
     return gameBoard;
   }
 
-  updateGameBoard(gameboard, player) {
+  updateGameBoard(gameboard, player, isOpponentBoard = false) {
     const squares = gameboard.querySelectorAll(".game-board-square");
 
     for (let i = 0; i < 10; i++) {
@@ -32,7 +32,6 @@ class Renderer {
         const playerBoardValue = player.gameboard.board[i][j];
 
         const coordinates = `${i},${j}`;
-        console.log(player.gameboard.hits);
 
         if (player.gameboard.hits.has(coordinates)) {
           this.resetSquareClasses(targetSquare);
@@ -45,7 +44,11 @@ class Renderer {
           targetSquare.classList.add("water");
         } else if (playerBoardValue instanceof Ship) {
           this.resetSquareClasses(targetSquare);
-          targetSquare.classList.add("ship");
+          if (isOpponentBoard) {
+            targetSquare.classList.add("hidden-ship");
+          } else {
+            targetSquare.classList.add("ship");
+          }
         }
       }
     }
@@ -54,6 +57,49 @@ class Renderer {
 
   resetSquareClasses(square) {
     square.className = "game-board-square";
+  }
+
+  addClickableSquares(
+    ownGameBoard,
+    ownPlayer,
+    opponentGameBoard,
+    opponentPlayer,
+  ) {
+    const squares = opponentGameBoard.querySelectorAll(".game-board-square");
+
+    squares.forEach((square) => {
+      square.addEventListener("click", () => {
+        const row = parseInt(square.dataset.row);
+        const column = parseInt(square.dataset.column);
+        const coordinate = [row, column];
+
+        const result = this.game.processTurn(coordinate);
+
+        if (result === "already-attacked") {
+          return;
+        } else {
+          this.updateGameBoard(opponentGameBoard, opponentPlayer, true);
+          this.handleComputerTurn(ownGameBoard, ownPlayer);
+        }
+      });
+    });
+  }
+
+  handleComputerTurn(ownGameBoard, ownPlayer) {
+    if (this.game.gameState === "ended") {
+      return;
+    }
+
+    if (this.game.currentPlayer.type !== "computer") {
+      return;
+    }
+
+    const result = this.game.processTurn();
+    if (result === "already-attacked") {
+      return;
+    } else {
+      this.updateGameBoard(ownGameBoard, ownPlayer, false);
+    }
   }
 }
 
