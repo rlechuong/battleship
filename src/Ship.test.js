@@ -43,7 +43,7 @@ describe("Ship", () => {
       expect(ship.isSunk()).toBe(false);
     });
 
-    test("ship with less hits than length not be sunk", () => {
+    test("ship with less hits than length should not be sunk", () => {
       const ship = new Ship(3);
       ship.hit();
       ship.hit();

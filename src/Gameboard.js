@@ -77,7 +77,7 @@ class Gameboard {
       return false;
     }
 
-    const allShipsSunk = this.ships.every(function (ship) {
+    const allShipsSunk = this.ships.every((ship) => {
       return ship.isSunk();
     });
 
