@@ -7,57 +7,57 @@ class GameController {
   }
 
   initializeGame() {
-    this.game.placePlayerShip(
-      this.game.player1,
-      "Carrier",
-      [2, 1],
-      "horizontal",
-    );
-    this.game.placePlayerShip(
-      this.game.player1,
-      "Battleship",
-      [6, 3],
-      "vertical",
-    );
-    this.game.placePlayerShip(
-      this.game.player1,
-      "Cruiser",
-      [4, 6],
-      "horizontal",
-    );
-    this.game.placePlayerShip(
-      this.game.player1,
-      "Submarine",
-      [1, 8],
-      "vertical",
-    );
-    this.game.placePlayerShip(
-      this.game.player1,
-      "Destroyer",
-      [9, 0],
-      "horizontal",
-    );
+    // this.game.placePlayerShip(
+    //   this.game.player1,
+    //   "Carrier",
+    //   [2, 1],
+    //   "horizontal",
+    // );
+    // this.game.placePlayerShip(
+    //   this.game.player1,
+    //   "Battleship",
+    //   [6, 3],
+    //   "vertical",
+    // );
+    // this.game.placePlayerShip(
+    //   this.game.player1,
+    //   "Cruiser",
+    //   [4, 6],
+    //   "horizontal",
+    // );
+    // this.game.placePlayerShip(
+    //   this.game.player1,
+    //   "Submarine",
+    //   [1, 8],
+    //   "vertical",
+    // );
+    // this.game.placePlayerShip(
+    //   this.game.player1,
+    //   "Destroyer",
+    //   [9, 0],
+    //   "horizontal",
+    // );
 
-    this.game.placePlayerShip(this.game.player2, "Carrier", [0, 5], "vertical");
-    this.game.placePlayerShip(
-      this.game.player2,
-      "Battleship",
-      [3, 0],
-      "horizontal",
-    );
-    this.game.placePlayerShip(this.game.player2, "Cruiser", [7, 7], "vertical");
-    this.game.placePlayerShip(
-      this.game.player2,
-      "Submarine",
-      [5, 2],
-      "horizontal",
-    );
-    this.game.placePlayerShip(
-      this.game.player2,
-      "Destroyer",
-      [1, 4],
-      "vertical",
-    );
+    // this.game.placePlayerShip(this.game.player2, "Carrier", [0, 5], "vertical");
+    // this.game.placePlayerShip(
+    //   this.game.player2,
+    //   "Battleship",
+    //   [3, 0],
+    //   "horizontal",
+    // );
+    // this.game.placePlayerShip(this.game.player2, "Cruiser", [7, 7], "vertical");
+    // this.game.placePlayerShip(
+    //   this.game.player2,
+    //   "Submarine",
+    //   [5, 2],
+    //   "horizontal",
+    // );
+    // this.game.placePlayerShip(
+    //   this.game.player2,
+    //   "Destroyer",
+    //   [1, 4],
+    //   "vertical",
+    // );
 
     this.player1GameBoard = this.renderer.createGameBoard();
     this.player2GameBoard = this.renderer.createGameBoard();
@@ -67,14 +67,6 @@ class GameController {
 
     const rightBoard = document.querySelector("#right-board");
     rightBoard.appendChild(this.player2GameBoard);
-
-    this.game.player1.gameboard.receiveAttack([2, 1]);
-    this.game.player1.gameboard.receiveAttack([2, 2]);
-    this.game.player1.gameboard.receiveAttack([0, 0]);
-
-    this.game.player2.gameboard.receiveAttack([0, 5]);
-    this.game.player2.gameboard.receiveAttack([1, 5]);
-    this.game.player2.gameboard.receiveAttack([9, 9]);
 
     this.renderer.updateGameBoard(
       this.player1GameBoard,
