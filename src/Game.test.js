@@ -59,7 +59,7 @@ describe("Game", () => {
       const player2 = new Player("computer");
       const game = new Game(player1, player2);
 
-      const opponentGameBoard = game.opponent.gameboard;
+      const opponentGameBoard = game.opponent.gameBoard;
 
       const ship = new Ship(3);
       opponentGameBoard.placeShip(ship, [0, 0], "horizontal");
@@ -75,7 +75,7 @@ describe("Game", () => {
       const player2 = new Player("computer");
       const game = new Game(player1, player2);
 
-      const opponentGameBoard = game.opponent.gameboard;
+      const opponentGameBoard = game.opponent.gameBoard;
 
       const ship = new Ship(3);
       opponentGameBoard.placeShip(ship, [0, 0], "horizontal");
@@ -109,13 +109,13 @@ describe("Game", () => {
       }
 
       const ship = new Ship(3);
-      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+      game.opponent.gameBoard.placeShip(ship, [0, 0], "horizontal");
       const initialOpponent = game.opponent;
 
       expect([true, false]).toContain(game.processTurn());
       expect(
-        initialOpponent.gameboard.hits.size +
-          initialOpponent.gameboard.misses.size,
+        initialOpponent.gameBoard.hits.size +
+          initialOpponent.gameBoard.misses.size,
       ).toBe(1);
       expect(game.currentPlayer).toBe(initialOpponent);
     });
@@ -133,8 +133,8 @@ describe("Game", () => {
 
       expect([true, false]).toContain(game.processTurn([0, 0]));
       expect(
-        initialOpponent.gameboard.hits.size +
-          initialOpponent.gameboard.misses.size,
+        initialOpponent.gameBoard.hits.size +
+          initialOpponent.gameBoard.misses.size,
       ).toBe(1);
       expect(game.currentPlayer).toBe(initialOpponent);
     });
@@ -149,10 +149,10 @@ describe("Game", () => {
       }
 
       const ship = new Ship(3);
-      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+      game.opponent.gameBoard.placeShip(ship, [0, 0], "horizontal");
 
-      game.opponent.gameboard.receiveAttack([0, 0]);
-      game.opponent.gameboard.receiveAttack([0, 1]);
+      game.opponent.gameBoard.receiveAttack([0, 0]);
+      game.opponent.gameBoard.receiveAttack([0, 1]);
 
       expect([true, false]).toContain(game.processTurn([0, 2]));
       expect(game.gameState).toBe("ended");
@@ -169,7 +169,7 @@ describe("Game", () => {
       }
 
       const ship = new Ship(3);
-      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+      game.opponent.gameBoard.placeShip(ship, [0, 0], "horizontal");
 
       expect(game.processTurn([0, 0])).toBe(true);
       expect(game.currentPlayer).toBe(computerPlayer);
@@ -185,7 +185,7 @@ describe("Game", () => {
       }
 
       const ship = new Ship(3);
-      game.opponent.gameboard.placeShip(ship, [0, 0], "horizontal");
+      game.opponent.gameBoard.placeShip(ship, [0, 0], "horizontal");
 
       expect(game.processTurn([9, 9])).toBe(false);
       expect(game.currentPlayer).toBe(computerPlayer);
@@ -200,7 +200,7 @@ describe("Game", () => {
         game.switchTurn();
       }
 
-      game.opponent.gameboard.receiveAttack([0, 0]);
+      game.opponent.gameBoard.receiveAttack([0, 0]);
 
       expect(game.processTurn([0, 0])).toBe("already-attacked");
       expect(game.currentPlayer).toBe(realPlayer);
@@ -217,7 +217,7 @@ describe("Game", () => {
 
       for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-          game.opponent.gameboard.receiveAttack([i, j]);
+          game.opponent.gameBoard.receiveAttack([i, j]);
         }
       }
 
@@ -240,12 +240,12 @@ describe("Game", () => {
         game.switchTurn();
       }
 
-      game.currentPlayer.gameboard.placeShip(
+      game.currentPlayer.gameBoard.placeShip(
         realPlayerShip,
         [0, 0],
         "horizontal",
       );
-      game.opponent.gameboard.placeShip(
+      game.opponent.gameBoard.placeShip(
         computerPlayerShip,
         [0, 0],
         "horizontal",
@@ -262,7 +262,7 @@ describe("Game", () => {
       expect(game.currentPlayer).toBe(realPlayer);
       expect([true, false]).toContain(game.processTurn([0, 2]));
       expect(game.currentPlayer).toBe(realPlayer);
-      expect(game.opponent.gameboard.allShipsSunk()).toBe(true);
+      expect(game.opponent.gameBoard.allShipsSunk()).toBe(true);
       expect(game.gameState).toBe("ended");
       expect(game.winner).toBe(realPlayer);
     });
@@ -277,8 +277,8 @@ describe("Game", () => {
       expect(
         game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
       ).toBe(true);
-      expect(realPlayer1.gameboard.board[0][0]).toBeInstanceOf(Ship);
-      expect(realPlayer1.gameboard.board[0][4]).toBeInstanceOf(Ship);
+      expect(realPlayer1.gameBoard.board[0][0]).toBeInstanceOf(Ship);
+      expect(realPlayer1.gameBoard.board[0][4]).toBeInstanceOf(Ship);
       expect(game.player1UnplacedShips).not.toContain("Carrier");
       expect(game.player1UnplacedShips.length).toBe(4);
     });
@@ -296,8 +296,8 @@ describe("Game", () => {
           "horizontal",
         ),
       ).toBe(true);
-      expect(computerPlayer2.gameboard.board[3][6]).toBeInstanceOf(Ship);
-      expect(computerPlayer2.gameboard.board[3][9]).toBeInstanceOf(Ship);
+      expect(computerPlayer2.gameBoard.board[3][6]).toBeInstanceOf(Ship);
+      expect(computerPlayer2.gameBoard.board[3][9]).toBeInstanceOf(Ship);
       expect(game.player2UnplacedShips).not.toContain("Battleship");
       expect(game.player2UnplacedShips.length).toBe(4);
     });
@@ -320,7 +320,7 @@ describe("Game", () => {
       expect(
         game.placePlayerShip(realPlayer1, "Invalid", [0, 0], "horizontal"),
       ).toBe(false);
-      expect(realPlayer1.gameboard.board[0][0]).toBe(null);
+      expect(realPlayer1.gameBoard.board[0][0]).toBe(null);
       expect(game.player1UnplacedShips.length).toBe(5);
     });
 
@@ -339,7 +339,7 @@ describe("Game", () => {
 
       expect(game.player1UnplacedShips).not.toContain("Carrier");
       expect(game.player1UnplacedShips.length).toBe(4);
-      expect(realPlayer1.gameboard.ships.length).toBe(1);
+      expect(realPlayer1.gameBoard.ships.length).toBe(1);
     });
 
     test("should return false if trying to place ship on out of bounds coordinates", () => {
@@ -351,7 +351,7 @@ describe("Game", () => {
         game.placePlayerShip(realPlayer1, "Carrier", [9, 9], "horizontal"),
       ).toBe(false);
       expect(game.player1UnplacedShips).toContain("Carrier");
-      expect(realPlayer1.gameboard.ships.length).toBe(0);
+      expect(realPlayer1.gameBoard.ships.length).toBe(0);
     });
 
     test("should return false if trying to place ship on occupied coordinates", () => {
@@ -366,7 +366,7 @@ describe("Game", () => {
         game.placePlayerShip(realPlayer1, "Battleship", [0, 3], "horizontal"),
       ).toBe(false);
       expect(game.player1UnplacedShips).toContain("Battleship");
-      expect(realPlayer1.gameboard.ships.length).toBe(1);
+      expect(realPlayer1.gameBoard.ships.length).toBe(1);
     });
 
     test("should return false if trying to place a ship after they have all been placed", () => {
@@ -384,7 +384,7 @@ describe("Game", () => {
         game.placePlayerShip(realPlayer1, "Carrier", [5, 0], "horizontal"),
       ).toBe(false);
       expect(game.player1UnplacedShips.length).toBe(0);
-      expect(realPlayer1.gameboard.ships.length).toBe(5);
+      expect(realPlayer1.gameBoard.ships.length).toBe(5);
     });
   });
 

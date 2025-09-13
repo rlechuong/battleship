@@ -29,7 +29,7 @@ class Game {
   }
 
   isGameOver() {
-    return this.opponent.gameboard.allShipsSunk();
+    return this.opponent.gameBoard.allShipsSunk();
   }
 
   endGame() {
@@ -41,11 +41,11 @@ class Game {
     let result;
 
     if (this.currentPlayer.type === "computer") {
-      result = this.currentPlayer.computerAttack(this.opponent.gameboard);
+      result = this.currentPlayer.computerAttack(this.opponent.gameBoard);
       if (
         result === false &&
-        this.opponent.gameboard.hits.size +
-          this.opponent.gameboard.misses.size ===
+        this.opponent.gameBoard.hits.size +
+          this.opponent.gameBoard.misses.size ===
           100
       ) {
         throw new Error(
@@ -53,7 +53,7 @@ class Game {
         );
       }
     } else if (this.currentPlayer.type === "real") {
-      result = this.opponent.gameboard.receiveAttack(coordinates);
+      result = this.opponent.gameBoard.receiveAttack(coordinates);
     }
 
     if (this.isGameOver()) {
@@ -75,7 +75,7 @@ class Game {
     }
 
     const ship = SHIP_TYPES[shipName]();
-    const success = player.gameboard.placeShip(ship, coordinates, direction);
+    const success = player.gameBoard.placeShip(ship, coordinates, direction);
 
     if (success) {
       const index = unplacedShips.indexOf(shipName);

@@ -20,21 +20,21 @@ class Renderer {
     return gameBoard;
   }
 
-  updateGameBoard(gameboard, player, isPlayerBoard = true) {
-    const squares = gameboard.querySelectorAll(".game-board-square");
+  updateGameBoard(gameBoard, player, isPlayerBoard = true) {
+    const squares = gameBoard.querySelectorAll(".game-board-square");
 
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         const squareIndex = i * 10 + j;
         const targetSquare = squares[squareIndex];
-        const playerBoardValue = player.gameboard.board[i][j];
+        const playerBoardValue = player.gameBoard.board[i][j];
 
         const coordinates = `${i},${j}`;
 
-        if (player.gameboard.hits.has(coordinates)) {
+        if (player.gameBoard.hits.has(coordinates)) {
           this.resetSquareClasses(targetSquare);
           targetSquare.classList.add("hit");
-        } else if (player.gameboard.misses.has(coordinates)) {
+        } else if (player.gameBoard.misses.has(coordinates)) {
           this.resetSquareClasses(targetSquare);
           targetSquare.classList.add("miss");
         } else if (playerBoardValue === null) {
@@ -54,12 +54,12 @@ class Renderer {
     return squares[0];
   }
 
-  updatePlayerGameBoard(gameboard, player) {
-    this.updateGameBoard(gameboard, player, true);
+  updatePlayerGameBoard(gameBoard, player) {
+    this.updateGameBoard(gameBoard, player, true);
   }
 
-  updateOpponentBoard(gameboard, player) {
-    this.updateGameBoard(gameboard, player, false);
+  updateOpponentBoard(gameBoard, player) {
+    this.updateGameBoard(gameBoard, player, false);
   }
 
   resetSquareClasses(square) {
