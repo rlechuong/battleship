@@ -1,9 +1,7 @@
 import { Ship } from "./Ship.js";
 
 class Renderer {
-  constructor(game) {
-    this.game = game;
-  }
+  constructor() {}
 
   createGameBoard() {
     const gameBoard = document.createElement("div");
@@ -22,7 +20,7 @@ class Renderer {
     return gameBoard;
   }
 
-  updateGameBoard(gameboard, player, isOpponentBoard = false) {
+  updateGameBoard(gameboard, player, isPlayerBoard = true) {
     const squares = gameboard.querySelectorAll(".game-board-square");
 
     for (let i = 0; i < 10; i++) {
@@ -44,62 +42,28 @@ class Renderer {
           targetSquare.classList.add("water");
         } else if (playerBoardValue instanceof Ship) {
           this.resetSquareClasses(targetSquare);
-          if (isOpponentBoard) {
-            targetSquare.classList.add("hidden-ship");
-          } else {
+          if (isPlayerBoard) {
             targetSquare.classList.add("ship");
+          } else {
+            targetSquare.classList.add("hidden-ship");
           }
         }
       }
     }
+
     return squares[0];
+  }
+
+  updatePlayerGameBoard(gameboard, player) {
+    this.updateGameBoard(gameboard, player, true);
+  }
+
+  updateOpponentBoard(gameboard, player) {
+    this.updateGameBoard(gameboard, player, false);
   }
 
   resetSquareClasses(square) {
     square.className = "game-board-square";
-  }
-
-  addClickableSquares(
-    ownGameBoard,
-    ownPlayer,
-    opponentGameBoard,
-    opponentPlayer,
-  ) {
-    const squares = opponentGameBoard.querySelectorAll(".game-board-square");
-
-    squares.forEach((square) => {
-      square.addEventListener("click", () => {
-        const row = parseInt(square.dataset.row);
-        const column = parseInt(square.dataset.column);
-        const coordinate = [row, column];
-
-        const result = this.game.processTurn(coordinate);
-
-        if (result === "already-attacked") {
-          return;
-        } else {
-          this.updateGameBoard(opponentGameBoard, opponentPlayer, true);
-          this.handleComputerTurn(ownGameBoard, ownPlayer);
-        }
-      });
-    });
-  }
-
-  handleComputerTurn(ownGameBoard, ownPlayer) {
-    if (this.game.gameState === "ended") {
-      return;
-    }
-
-    if (this.game.currentPlayer.type !== "computer") {
-      return;
-    }
-
-    const result = this.game.processTurn();
-    if (result === "already-attacked") {
-      return;
-    } else {
-      this.updateGameBoard(ownGameBoard, ownPlayer, false);
-    }
   }
 }
 
