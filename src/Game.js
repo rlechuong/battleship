@@ -1,4 +1,4 @@
-import { Ship } from "./Ship";
+import { Ship } from "./Ship.js";
 
 class Game {
   constructor(player1, player2) {
@@ -74,7 +74,7 @@ class Game {
       return false;
     }
 
-    const ship = SHIP_TYPES[shipName];
+    const ship = SHIP_TYPES[shipName]();
     const success = player.gameboard.placeShip(ship, coordinates, direction);
 
     if (success) {
@@ -109,11 +109,11 @@ class Game {
 }
 
 const SHIP_TYPES = {
-  Carrier: new Ship(5),
-  Battleship: new Ship(4),
-  Cruiser: new Ship(3),
-  Submarine: new Ship(3),
-  Destroyer: new Ship(2),
+  Carrier: () => new Ship(5),
+  Battleship: () => new Ship(4),
+  Cruiser: () => new Ship(3),
+  Submarine: () => new Ship(3),
+  Destroyer: () => new Ship(2),
 };
 
 export { Game };
