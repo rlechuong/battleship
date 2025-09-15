@@ -25,6 +25,10 @@ class ShipPlacementController {
       } while (placementResult !== true);
     }
   }
+
+  resetPlayerShips(player) {
+    this.game.resetPlayerShips(player);
+  }
 }
 
 export { ShipPlacementController };

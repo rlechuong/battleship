@@ -11,13 +11,31 @@
       <div id="game-status-header">Game Status</div>
       <div id="game-status-message"></div>
     </div>
-    <div id="left">
-      <div id="left-header">Your Board</div>
-      <div id="left-board"></div>
+    <div id="game-boards-container">
+      <div id="left">
+        <div id="left-header">Your Board</div>
+        <div id="left-board"></div>
+        <div id="left-board-ship-placement-container">
+          <button id="left-board-random-placement-button">
+          Randomly Place
+          </button>
+          <button id="left-board-reset-placement-button">Reset Board</button>
+        </div>
+      </div>
+      <div id="right">
+        <div id="right-header">Opponent's Board</div>
+        <div id="right-board"></div>
+        <div id="right-board-ship-placement-container">
+          <button id="right-board-random-placement-button">
+          Randomly Place
+          </button>
+          <button id="right-board-reset-placement-button">Reset Board</button>
+        </div>
+      </div>
     </div>
-    <div id="right">
-      <div id="right-header">Opponent's Board</div>
-      <div id="right-board"></div>
+    <div id="game-phase-change-container">
+      <button id="start-playing-phase-button">Start Game</button>
+      <div id="game-phase-change-error"></div>
     </div>
     <div id="bottom">Bottom</div>
   </body>

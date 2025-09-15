@@ -10,10 +10,11 @@ const computerPlayer2 = new Player("computer");
 const game = new Game(realPlayer1, computerPlayer2);
 
 const renderer = new Renderer();
-const gameController = new GameController(game, renderer);
 const shipPlacementController = new ShipPlacementController(game, renderer);
-
-shipPlacementController.randomlyPlaceShips(realPlayer1);
-shipPlacementController.randomlyPlaceShips(computerPlayer2);
+const gameController = new GameController(
+  game,
+  renderer,
+  shipPlacementController,
+);
 
 gameController.initializeGame();

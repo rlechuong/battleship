@@ -1,64 +1,14 @@
 class GameController {
-  constructor(game, renderer) {
+  constructor(game, renderer, shipPlacementController) {
     this.game = game;
     this.renderer = renderer;
+    this.shipPlacementController = shipPlacementController;
     this.player1GameBoard = null;
     this.player2GameBoard = null;
+    this.phase = "setup";
   }
 
   initializeGame() {
-    // this.game.placePlayerShip(
-    //   this.game.player1,
-    //   "Carrier",
-    //   [2, 1],
-    //   "horizontal",
-    // );
-    // this.game.placePlayerShip(
-    //   this.game.player1,
-    //   "Battleship",
-    //   [6, 3],
-    //   "vertical",
-    // );
-    // this.game.placePlayerShip(
-    //   this.game.player1,
-    //   "Cruiser",
-    //   [4, 6],
-    //   "horizontal",
-    // );
-    // this.game.placePlayerShip(
-    //   this.game.player1,
-    //   "Submarine",
-    //   [1, 8],
-    //   "vertical",
-    // );
-    // this.game.placePlayerShip(
-    //   this.game.player1,
-    //   "Destroyer",
-    //   [9, 0],
-    //   "horizontal",
-    // );
-
-    // this.game.placePlayerShip(this.game.player2, "Carrier", [0, 5], "vertical");
-    // this.game.placePlayerShip(
-    //   this.game.player2,
-    //   "Battleship",
-    //   [3, 0],
-    //   "horizontal",
-    // );
-    // this.game.placePlayerShip(this.game.player2, "Cruiser", [7, 7], "vertical");
-    // this.game.placePlayerShip(
-    //   this.game.player2,
-    //   "Submarine",
-    //   [5, 2],
-    //   "horizontal",
-    // );
-    // this.game.placePlayerShip(
-    //   this.game.player2,
-    //   "Destroyer",
-    //   [1, 4],
-    //   "vertical",
-    // );
-
     this.player1GameBoard = this.renderer.createGameBoard();
     this.player2GameBoard = this.renderer.createGameBoard();
 
@@ -79,6 +29,14 @@ class GameController {
       false,
     );
 
+    this.setUpShipPlacementButtons();
+    this.setUpGamePhaseChangeButtons();
+    this.updateGameStatusMessage();
+  }
+
+  startPlayingPhase() {
+    this.phase = "playing";
+
     this.addEventListeners(
       this.player1GameBoard,
       this.game.player1,
@@ -86,7 +44,106 @@ class GameController {
       this.game.player2,
     );
 
+    this.renderer.updateGameBoard(
+      this.player2GameBoard,
+      this.game.player2,
+      false,
+    );
+
+    const leftBoardRandomPlacementButton = document.querySelector(
+      "#left-board-random-placement-button",
+    );
+    leftBoardRandomPlacementButton.classList.add("hidden");
+    const leftBoardResetPlacementButton = document.querySelector(
+      "#left-board-reset-placement-button",
+    );
+    leftBoardResetPlacementButton.classList.add("hidden");
+    const rightBoardRandomPlacementButton = document.querySelector(
+      "#right-board-random-placement-button",
+    );
+    rightBoardRandomPlacementButton.classList.add("hidden");
+    const rightBoardResetPlacementButton = document.querySelector(
+      "#right-board-reset-placement-button",
+    );
+    rightBoardResetPlacementButton.classList.add("hidden");
+    const startPlayingPhaseButton = document.querySelector(
+      "#start-playing-phase-button",
+    );
+    startPlayingPhaseButton.classList.add("hidden");
+    const gamePhaseChangeError = document.querySelector(
+      "#game-phase-change-error",
+    );
+    gamePhaseChangeError.classList.add("hidden");
+
     this.updateGameStatusMessage();
+  }
+
+  setUpShipPlacementButtons() {
+    const leftBoardRandomPlacementButton = document.querySelector(
+      "#left-board-random-placement-button",
+    );
+    leftBoardRandomPlacementButton.addEventListener("click", () => {
+      this.shipPlacementController.randomlyPlaceShips(this.game.player1);
+      this.renderer.updateGameBoard(
+        this.player1GameBoard,
+        this.game.player1,
+        true,
+      );
+    });
+
+    const leftBoardResetPlacementButton = document.querySelector(
+      "#left-board-reset-placement-button",
+    );
+    leftBoardResetPlacementButton.addEventListener("click", () => {
+      this.shipPlacementController.resetPlayerShips(this.game.player1);
+      this.renderer.updateGameBoard(
+        this.player1GameBoard,
+        this.game.player1,
+        true,
+      );
+    });
+
+    const rightBoardRandomPlacementButton = document.querySelector(
+      "#right-board-random-placement-button",
+    );
+    rightBoardRandomPlacementButton.addEventListener("click", () => {
+      this.shipPlacementController.randomlyPlaceShips(this.game.player2);
+      this.renderer.updateGameBoard(
+        this.player2GameBoard,
+        this.game.player2,
+        true,
+      );
+    });
+
+    const rightBoardResetPlacementButton = document.querySelector(
+      "#right-board-reset-placement-button",
+    );
+    rightBoardResetPlacementButton.addEventListener("click", () => {
+      this.shipPlacementController.resetPlayerShips(this.game.player2);
+      this.renderer.updateGameBoard(
+        this.player2GameBoard,
+        this.game.player2,
+        true,
+      );
+    });
+  }
+
+  setUpGamePhaseChangeButtons() {
+    const startPlayingPhaseButton = document.querySelector(
+      "#start-playing-phase-button",
+    );
+    const gamePhaseChangeError = document.querySelector(
+      "#game-phase-change-error",
+    );
+    startPlayingPhaseButton.addEventListener("click", () => {
+      if (this.game.canStartGame()) {
+        this.startPlayingPhase();
+      } else {
+        gamePhaseChangeError.textContent =
+          "Please place all ships on both boards.";
+        return;
+      }
+    });
   }
 
   addEventListeners(playerBoard, player, opponentBoard, opponent) {
@@ -142,7 +199,9 @@ class GameController {
   updateGameStatusMessage() {
     const gameStatusMessage = document.querySelector("#game-status-message");
 
-    if (this.game.gameState === "ended") {
+    if (this.phase === "setup" && this.game.gameState === "running") {
+      gameStatusMessage.textContent = "Please Place Ships.";
+    } else if (this.phase === "setup" && this.game.gameState === "ended") {
       const winnerType =
         this.game.winner.type === "real" ? "You" : "The Computer";
       gameStatusMessage.textContent = `Game Over! ${winnerType} Won`;
