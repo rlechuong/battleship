@@ -4,20 +4,8 @@ class Game {
   constructor(player1, player2) {
     this.player1 = player1;
     this.player2 = player2;
-    this.player1UnplacedShips = [
-      "Carrier",
-      "Battleship",
-      "Cruiser",
-      "Submarine",
-      "Destroyer",
-    ];
-    this.player2UnplacedShips = [
-      "Carrier",
-      "Battleship",
-      "Cruiser",
-      "Submarine",
-      "Destroyer",
-    ];
+    this.player1UnplacedShips = [...OG_UNPLACED_SHIPS];
+    this.player2UnplacedShips = [...OG_UNPLACED_SHIPS];
     this.currentPlayer = player1;
     this.opponent = player2;
     this.gameState = "running";
@@ -96,6 +84,18 @@ class Game {
     }
   }
 
+  resetPlayerShips(player) {
+    if (player === this.player1) {
+      player.gameBoard.resetGameBoard();
+      this.player1UnplacedShips = [...OG_UNPLACED_SHIPS];
+    } else if (player === this.player2) {
+      player.gameBoard.resetGameBoard();
+      this.player2UnplacedShips = [...OG_UNPLACED_SHIPS];
+    } else {
+      throw new Error("Invalid Player.");
+    }
+  }
+
   isPlayerSetupComplete(player) {
     return this.getUnplacedShips(player).length === 0;
   }
@@ -115,5 +115,13 @@ const SHIP_TYPES = {
   Submarine: () => new Ship(3),
   Destroyer: () => new Ship(2),
 };
+
+const OG_UNPLACED_SHIPS = [
+  "Carrier",
+  "Battleship",
+  "Cruiser",
+  "Submarine",
+  "Destroyer",
+];
 
 export { Game };

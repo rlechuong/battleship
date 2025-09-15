@@ -388,6 +388,77 @@ describe("Game", () => {
     });
   });
 
+  describe("resetPlayerShips()", () => {
+    test("should reset Player 1's board and unplaced ships array", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+
+      expect(realPlayer1.gameBoard.ships.length).toBe(2);
+      expect(game.player1UnplacedShips.length).toBe(3);
+      game.resetPlayerShips(realPlayer1);
+      expect(realPlayer1.gameBoard.ships.length).toBe(0);
+      expect(game.player1UnplacedShips.length).toBe(5);
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          expect(game.player1.gameBoard.board[i][j]).toBe(null);
+        }
+      }
+
+      expect(game.player1UnplacedShips).toEqual([
+        "Carrier",
+        "Battleship",
+        "Cruiser",
+        "Submarine",
+        "Destroyer",
+      ]);
+    });
+
+    test("should reset Player 2's board and unplaced ships array", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(computerPlayer2, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(computerPlayer2, "Battleship", [1, 0], "horizontal");
+
+      expect(computerPlayer2.gameBoard.ships.length).toBe(2);
+      expect(game.player2UnplacedShips.length).toBe(3);
+      game.resetPlayerShips(computerPlayer2);
+      expect(computerPlayer2.gameBoard.ships.length).toBe(0);
+      expect(game.player2UnplacedShips.length).toBe(5);
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          expect(game.player2.gameBoard.board[i][j]).toBe(null);
+        }
+      }
+
+      expect(game.player2UnplacedShips).toEqual([
+        "Carrier",
+        "Battleship",
+        "Cruiser",
+        "Submarine",
+        "Destroyer",
+      ]);
+    });
+
+    test("should throw error for invalid player", () => {
+      const realPlayer1 = new Player("real");
+      const computerPlayer2 = new Player("computer");
+      const game = new Game(realPlayer1, computerPlayer2);
+
+      game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal");
+      game.placePlayerShip(realPlayer1, "Battleship", [1, 0], "horizontal");
+
+      expect(() => game.resetPlayerShips(null)).toThrow("Invalid Player.");
+    });
+  });
+
   describe("isPlayerSetupComplete()", () => {
     test("should return true if player has placed all ships", () => {
       const realPlayer1 = new Player("real");
