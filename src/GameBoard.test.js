@@ -25,6 +25,50 @@ describe("GameBoard", () => {
     });
   });
 
+  describe("resetGameBoard()", () => {
+    test("should set all squares to null", () => {
+      const ship = new Ship(3);
+      const gameBoard = new GameBoard();
+      expect(gameBoard.placeShip(ship, [0, 0], "horizontal")).toBe(true);
+      gameBoard.resetGameBoard();
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          expect(gameBoard.board[i][j]).toBe(null);
+        }
+      }
+    });
+
+    test("should clear ships array", () => {
+      const ship = new Ship(3);
+      const gameBoard = new GameBoard();
+      expect(gameBoard.placeShip(ship, [0, 0], "horizontal")).toBe(true);
+      gameBoard.resetGameBoard();
+
+      expect(gameBoard.ships.length).toBe(0);
+    });
+
+    test("should clear misses set", () => {
+      const gameBoard = new GameBoard();
+      expect(gameBoard.receiveAttack([9, 9])).toBe(false);
+      expect(gameBoard.misses.size).toBe(1);
+      gameBoard.resetGameBoard();
+
+      expect(gameBoard.misses.size).toBe(0);
+    });
+
+    test("should clear hits set", () => {
+      const ship = new Ship(3);
+      const gameBoard = new GameBoard();
+      expect(gameBoard.placeShip(ship, [0, 0], "horizontal")).toBe(true);
+      expect(gameBoard.receiveAttack([0, 0])).toBe(true);
+      expect(gameBoard.hits.size).toBe(1);
+      gameBoard.resetGameBoard();
+
+      expect(gameBoard.hits.size).toBe(0);
+    });
+  });
+
   describe("placeShip()", () => {
     test("should successfully place a ship of length 2 at [0,0] horizontally", () => {
       const ship = new Ship(2);
