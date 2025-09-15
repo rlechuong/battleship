@@ -66,10 +66,14 @@ class GameController {
       "#right-board-reset-placement-button",
     );
     rightBoardResetPlacementButton.classList.add("hidden");
-    const startPlayingPhaseButton = document.querySelector(
-      "#start-playing-phase-button",
+    const startPlayingPhaseContainer = document.querySelector(
+      "#start-playing-phase-container",
     );
-    startPlayingPhaseButton.classList.add("hidden");
+    startPlayingPhaseContainer.classList.add("hidden");
+    const quickStartComputerContainer = document.querySelector(
+      "#quick-start-computer-container",
+    );
+    quickStartComputerContainer.classList.add("hidden");
     const gamePhaseChangeError = document.querySelector(
       "#game-phase-change-error",
     );
@@ -129,11 +133,12 @@ class GameController {
   }
 
   setUpGamePhaseChangeButtons() {
-    const startPlayingPhaseButton = document.querySelector(
-      "#start-playing-phase-button",
-    );
     const gamePhaseChangeError = document.querySelector(
       "#game-phase-change-error",
+    );
+
+    const startPlayingPhaseButton = document.querySelector(
+      "#start-playing-phase-button",
     );
     startPlayingPhaseButton.addEventListener("click", () => {
       if (this.game.canStartGame()) {
@@ -141,6 +146,23 @@ class GameController {
       } else {
         gamePhaseChangeError.textContent =
           "Please place all ships on both boards.";
+        return;
+      }
+    });
+
+    const quickStartComputerButton = document.querySelector(
+      "#quick-start-computer-button",
+    );
+    quickStartComputerButton.addEventListener("click", () => {
+      if (this.game.isPlayerSetupComplete(this.game.player1)) {
+        this.shipPlacementController.resetPlayerShips(this.game.player2);
+        this.shipPlacementController.randomlyPlaceShips(this.game.player2);
+        if (this.game.canStartGame()) {
+          this.startPlayingPhase();
+        }
+      } else {
+        gamePhaseChangeError.textContent =
+          "Please place all ships on your board.";
         return;
       }
     });
@@ -210,6 +232,10 @@ class GameController {
         this.game.currentPlayer.type === "real" ? "Your" : "Computer's";
       gameStatusMessage.textContent = `It Is ${currentPlayerType} Turn`;
     }
+  }
+
+  populateLeftBoardShipDropdown() {
+    const unplacedShips = this.game.getUnplacedShips(this.game.player1);
   }
 }
 

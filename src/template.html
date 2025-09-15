@@ -16,9 +16,45 @@
         <div id="left-header">Your Board</div>
         <div id="left-board"></div>
         <div id="left-board-ship-placement-container">
+          <div id="left-board-manual-placement-container">
+            <label for="left-board-ship-dropdown">Ship:</label>
+            <select
+              id="left-board-ship-dropdown"
+              name="left-board-ship-dropdown"
+            ></select>
+            <label for="left-board-manual-coordinate-input">Coordinates</label>
+            <input
+              type="text"
+              id="left-board-manual-coordinate-input"
+              name="left-board-manual-coordinate-input"
+              placeholder="A1"
+            />
+            <fieldset>
+              <legend>Ship Direction</legend>
+              <label for="left-board-horizontal">Horizontal</label>
+              <input
+                type="radio"
+                id="left-board-horizontal"
+                name="left-board-manual-direction-input"
+                value="horizontal"
+                checked
+              />
+              <label for="left-board-vertical">Vertical</label>
+              <input
+                type="radio"
+                id="left-board-vertical"
+                name="left-board-manual-direction-input"
+                value="vertical"
+              />
+            </fieldset>
+            <button id="left-board-manual-place-ship-button">Place Ship</button>
+            <div id="left-board-manual-placement-error"></div>
+          </div>
+
           <button id="left-board-random-placement-button">
-          Randomly Place
+            Randomly Place
           </button>
+
           <button id="left-board-reset-placement-button">Reset Board</button>
         </div>
       </div>
@@ -27,14 +63,27 @@
         <div id="right-board"></div>
         <div id="right-board-ship-placement-container">
           <button id="right-board-random-placement-button">
-          Randomly Place
+            Randomly Place
           </button>
           <button id="right-board-reset-placement-button">Reset Board</button>
         </div>
       </div>
     </div>
     <div id="game-phase-change-container">
-      <button id="start-playing-phase-button">Start Game</button>
+      <div id="start-playing-phase-container">
+        <button id="start-playing-phase-button">Start Game</button>
+        <div id="start-playing-phase-explanation">
+          Place ships on both boards then begin the game.
+        </div>
+      </div>
+      <div id="quick-start-computer-container">
+        <button id="quick-start-computer-button">
+          Quick Start vs Computer
+        </button>
+        <div id="quick-start-computer-explanation">
+          Place ships on your board and the opponent's board will be randomized.
+        </div>
+      </div>
       <div id="game-phase-change-error"></div>
     </div>
     <div id="bottom">Bottom</div>
