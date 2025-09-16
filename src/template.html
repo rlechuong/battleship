@@ -17,16 +17,18 @@
         <div id="left-board"></div>
         <div id="left-board-ship-placement-container">
           <div id="left-board-manual-placement-container">
-            <label for="left-board-ship-dropdown">Ship:</label>
+            <label for="left-board-manual-ship-dropdown">Ship:</label>
             <select
-              id="left-board-ship-dropdown"
-              name="left-board-ship-dropdown"
+              id="left-board-manual-ship-dropdown"
+              name="left-board-manual-ship-dropdown"
             ></select>
-            <label for="left-board-manual-coordinate-input">Coordinates</label>
+            <label for="left-board-manual-coordinates-input"
+              >Coordinates:</label
+            >
             <input
               type="text"
-              id="left-board-manual-coordinate-input"
-              name="left-board-manual-coordinate-input"
+              id="left-board-manual-coordinates-input"
+              name="left-board-manual-coordinates-input"
               placeholder="A1"
             />
             <fieldset>
@@ -47,7 +49,7 @@
                 value="vertical"
               />
             </fieldset>
-            <button id="left-board-manual-place-ship-button">Place Ship</button>
+            <button id="left-board-manual-placement-button">Place Ship</button>
             <div id="left-board-manual-placement-error"></div>
           </div>
 
@@ -62,9 +64,47 @@
         <div id="right-header">Opponent's Board</div>
         <div id="right-board"></div>
         <div id="right-board-ship-placement-container">
+          <div id="right-board-manual-placement-container">
+            <label for="right-board-manual-ship-dropdown">Ship:</label>
+            <select
+              id="right-board-manual-ship-dropdown"
+              name="right-board-manual-ship-dropdown"
+            ></select>
+            <label for="right-board-manual-coordinates-input"
+              >Coordinates:</label
+            >
+            <input
+              type="text"
+              id="right-board-manual-coordinates-input"
+              name="right-board-manual-coordinates-input"
+              placeholder="A1"
+            />
+            <fieldset>
+              <legend>Ship Direction</legend>
+              <label for="right-board-horizontal">Horizontal</label>
+              <input
+                type="radio"
+                id="right-board-horizontal"
+                name="right-board-manual-direction-input"
+                value="horizontal"
+                checked
+              />
+              <label for="right-board-vertical">Vertical</label>
+              <input
+                type="radio"
+                id="right-board-vertical"
+                name="right-board-manual-direction-input"
+                value="vertical"
+              />
+            </fieldset>
+            <button id="right-board-manual-placement-button">Place Ship</button>
+            <div id="right-board-manual-placement-error"></div>
+          </div>
+
           <button id="right-board-random-placement-button">
             Randomly Place
           </button>
+
           <button id="right-board-reset-placement-button">Reset Board</button>
         </div>
       </div>

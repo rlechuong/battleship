@@ -29,6 +29,8 @@ class GameController {
       false,
     );
 
+    this.populateLeftBoardShipDropdown();
+    this.populateRightBoardShipDropdown();
     this.setUpShipPlacementButtons();
     this.setUpGamePhaseChangeButtons();
     this.updateGameStatusMessage();
@@ -50,22 +52,14 @@ class GameController {
       false,
     );
 
-    const leftBoardRandomPlacementButton = document.querySelector(
-      "#left-board-random-placement-button",
+    const leftBoardShipPlacementContainer = document.querySelector(
+      "#left-board-ship-placement-container",
     );
-    leftBoardRandomPlacementButton.classList.add("hidden");
-    const leftBoardResetPlacementButton = document.querySelector(
-      "#left-board-reset-placement-button",
+    leftBoardShipPlacementContainer.classList.add("hidden");
+    const rightBoardShipPlacementContainer = document.querySelector(
+      "#right-board-ship-placement-container",
     );
-    leftBoardResetPlacementButton.classList.add("hidden");
-    const rightBoardRandomPlacementButton = document.querySelector(
-      "#right-board-random-placement-button",
-    );
-    rightBoardRandomPlacementButton.classList.add("hidden");
-    const rightBoardResetPlacementButton = document.querySelector(
-      "#right-board-reset-placement-button",
-    );
-    rightBoardResetPlacementButton.classList.add("hidden");
+    rightBoardShipPlacementContainer.classList.add("hidden");
     const startPlayingPhaseContainer = document.querySelector(
       "#start-playing-phase-container",
     );
@@ -83,16 +77,28 @@ class GameController {
   }
 
   setUpShipPlacementButtons() {
+    const leftBoardManualPlacementError = document.querySelector(
+      "#left-board-manual-placement-error",
+    );
+
+    const rightBoardManualPlacementError = document.querySelector(
+      "#right-board-manual-placement-error",
+    );
+
     const leftBoardRandomPlacementButton = document.querySelector(
       "#left-board-random-placement-button",
     );
     leftBoardRandomPlacementButton.addEventListener("click", () => {
+      this.shipPlacementController.resetPlayerShips(this.game.player1);
       this.shipPlacementController.randomlyPlaceShips(this.game.player1);
+      this.populateLeftBoardShipDropdown();
       this.renderer.updateGameBoard(
         this.player1GameBoard,
         this.game.player1,
         true,
       );
+      leftBoardManualPlacementError.textContent = "";
+      rightBoardManualPlacementError.textContent = "";
     });
 
     const leftBoardResetPlacementButton = document.querySelector(
@@ -100,23 +106,30 @@ class GameController {
     );
     leftBoardResetPlacementButton.addEventListener("click", () => {
       this.shipPlacementController.resetPlayerShips(this.game.player1);
+      this.populateLeftBoardShipDropdown();
       this.renderer.updateGameBoard(
         this.player1GameBoard,
         this.game.player1,
         true,
       );
+      leftBoardManualPlacementError.textContent = "";
+      rightBoardManualPlacementError.textContent = "";
     });
 
     const rightBoardRandomPlacementButton = document.querySelector(
       "#right-board-random-placement-button",
     );
     rightBoardRandomPlacementButton.addEventListener("click", () => {
+      this.shipPlacementController.resetPlayerShips(this.game.player2);
       this.shipPlacementController.randomlyPlaceShips(this.game.player2);
+      this.populateRightBoardShipDropdown();
       this.renderer.updateGameBoard(
         this.player2GameBoard,
         this.game.player2,
         true,
       );
+      leftBoardManualPlacementError.textContent = "";
+      rightBoardManualPlacementError.textContent = "";
     });
 
     const rightBoardResetPlacementButton = document.querySelector(
@@ -124,11 +137,112 @@ class GameController {
     );
     rightBoardResetPlacementButton.addEventListener("click", () => {
       this.shipPlacementController.resetPlayerShips(this.game.player2);
+      this.populateRightBoardShipDropdown();
       this.renderer.updateGameBoard(
         this.player2GameBoard,
         this.game.player2,
         true,
       );
+      leftBoardManualPlacementError.textContent = "";
+      rightBoardManualPlacementError.textContent = "";
+    });
+
+    const leftBoardManualPlacementButton = document.querySelector(
+      "#left-board-manual-placement-button",
+    );
+
+    leftBoardManualPlacementButton.addEventListener("click", () => {
+      const leftBoardManualCoordinatesInput = document.querySelector(
+        "#left-board-manual-coordinates-input",
+      );
+      const coordinatesInput = leftBoardManualCoordinatesInput.value;
+      const coordinates = this.parseCoordinates(coordinatesInput);
+      if (coordinates === null) {
+        leftBoardManualPlacementError.textContent =
+          "Invalid Coordinates. Please Enter A1-J10.";
+        return;
+      }
+
+      const leftBoardManualShipDropdown = document.querySelector(
+        "#left-board-manual-ship-dropdown",
+      );
+      const ship = leftBoardManualShipDropdown.value;
+
+      const leftBoardManualDirectionInput = document.querySelector(
+        `input[name="left-board-manual-direction-input"]:checked`,
+      );
+      const direction = leftBoardManualDirectionInput.value;
+
+      const success = this.game.placePlayerShip(
+        this.game.player1,
+        ship,
+        coordinates,
+        direction,
+      );
+
+      if (success) {
+        this.renderer.updateGameBoard(
+          this.player1GameBoard,
+          this.game.player1,
+          true,
+        );
+
+        this.populateLeftBoardShipDropdown();
+        leftBoardManualCoordinatesInput.value = "";
+        leftBoardManualPlacementError.textContent = "";
+      } else {
+        leftBoardManualPlacementError.textContent =
+          "Ship Cannot Be Placed There.";
+      }
+    });
+
+    const rightBoardManualPlacementButton = document.querySelector(
+      "#right-board-manual-placement-button",
+    );
+
+    rightBoardManualPlacementButton.addEventListener("click", () => {
+      const rightBoardManualCoordinatesInput = document.querySelector(
+        "#right-board-manual-coordinates-input",
+      );
+      const coordinatesInput = rightBoardManualCoordinatesInput.value;
+      const coordinates = this.parseCoordinates(coordinatesInput);
+      if (coordinates === null) {
+        rightBoardManualPlacementError.textContent =
+          "Invalid Coordinates. Please Enter A1-J10.";
+        return;
+      }
+
+      const rightBoardManualShipDropdown = document.querySelector(
+        "#right-board-manual-ship-dropdown",
+      );
+      const ship = rightBoardManualShipDropdown.value;
+
+      const rightBoardManualDirectionInput = document.querySelector(
+        `input[name="right-board-manual-direction-input"]:checked`,
+      );
+      const direction = rightBoardManualDirectionInput.value;
+
+      const success = this.game.placePlayerShip(
+        this.game.player2,
+        ship,
+        coordinates,
+        direction,
+      );
+
+      if (success) {
+        this.renderer.updateGameBoard(
+          this.player2GameBoard,
+          this.game.player2,
+          true,
+        );
+
+        this.populateRightBoardShipDropdown();
+        rightBoardManualCoordinatesInput.value = "";
+        rightBoardManualPlacementError.textContent = "";
+      } else {
+        rightBoardManualPlacementError.textContent =
+          "Ship Cannot Be Placed There.";
+      }
     });
   }
 
@@ -235,7 +349,65 @@ class GameController {
   }
 
   populateLeftBoardShipDropdown() {
+    const leftBoardManualShipDropdown = document.querySelector(
+      "#left-board-manual-ship-dropdown",
+    );
+    const leftBoardManualPlaceShipButton = document.querySelector(
+      "#left-board-manual-placement-button",
+    );
     const unplacedShips = this.game.getUnplacedShips(this.game.player1);
+
+    leftBoardManualShipDropdown.options.length = 0;
+    unplacedShips.forEach((ship) => {
+      const option = document.createElement("option");
+      option.textContent = ship;
+      leftBoardManualShipDropdown.appendChild(option);
+    });
+
+    if (unplacedShips.length === 0) {
+      leftBoardManualPlaceShipButton.disabled = true;
+    } else {
+      leftBoardManualPlaceShipButton.disabled = false;
+    }
+  }
+
+  populateRightBoardShipDropdown() {
+    const rightBoardManualShipDropdown = document.querySelector(
+      "#right-board-manual-ship-dropdown",
+    );
+    const rightBoardManualPlaceShipButton = document.querySelector(
+      "#right-board-manual-placement-button",
+    );
+    const unplacedShips = this.game.getUnplacedShips(this.game.player2);
+
+    rightBoardManualShipDropdown.options.length = 0;
+    unplacedShips.forEach((ship) => {
+      const option = document.createElement("option");
+      option.textContent = ship;
+      rightBoardManualShipDropdown.appendChild(option);
+    });
+
+    if (unplacedShips.length === 0) {
+      rightBoardManualPlaceShipButton.disabled = true;
+    } else {
+      rightBoardManualPlaceShipButton.disabled = false;
+    }
+  }
+
+  parseCoordinates(input) {
+    const coordinates = input.trim().toUpperCase();
+    const validPattern = /^[A-J]([1-9]|10)$/.test(coordinates);
+    if (!validPattern) {
+      return null;
+    }
+
+    const rowLetter = coordinates[0];
+    const columnNumber = coordinates.slice(1);
+
+    const row = rowLetter.charCodeAt(0) - 65;
+    const column = parseInt(columnNumber) - 1;
+
+    return [row, column];
   }
 }
 

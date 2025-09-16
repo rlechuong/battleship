@@ -139,6 +139,8 @@ body {
   pointer-events: none;
 }
 
-#game-phase-change-error {
+#game-phase-change-error,
+#left-board-manual-placement-error,
+#right-board-manual-placement-error {
   color: darkred;
 }
