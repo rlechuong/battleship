@@ -6,6 +6,7 @@ class GameController {
     this.player1GameBoard = null;
     this.player2GameBoard = null;
     this.phase = "setup";
+    this.squareEventListenersController = null;
   }
 
   initializeGame() {
@@ -32,14 +33,15 @@ class GameController {
     this.populateLeftBoardShipDropdown();
     this.populateRightBoardShipDropdown();
     this.setUpShipPlacementButtons();
-    this.setUpGamePhaseChangeButtons();
+    this.setUpStartGameButtons();
+    this.setUpPlayingGameButtons();
     this.updateGameStatusMessage();
   }
 
   startPlayingPhase() {
     this.phase = "playing";
 
-    this.addEventListeners(
+    this.addSquareEventListeners(
       this.player1GameBoard,
       this.game.player1,
       this.player2GameBoard,
@@ -60,18 +62,71 @@ class GameController {
       "#right-board-ship-placement-container",
     );
     rightBoardShipPlacementContainer.classList.add("hidden");
-    const startPlayingPhaseContainer = document.querySelector(
-      "#start-playing-phase-container",
+    const startGameButtonsContainer = document.querySelector(
+      "#start-game-buttons-container",
     );
-    startPlayingPhaseContainer.classList.add("hidden");
-    const quickStartComputerContainer = document.querySelector(
-      "#quick-start-computer-container",
+    startGameButtonsContainer.classList.add("hidden");
+    const playingGameButtonsContainer = document.querySelector(
+      "#playing-game-buttons-container",
     );
-    quickStartComputerContainer.classList.add("hidden");
-    const gamePhaseChangeError = document.querySelector(
-      "#game-phase-change-error",
+    playingGameButtonsContainer.classList.remove("hidden");
+
+    this.updateGameStatusMessage();
+  }
+
+  startNewGame() {
+    this.phase = "setup";
+
+    this.removeSquareEventListeners();
+
+    this.shipPlacementController.resetPlayerShips(this.game.player1);
+    this.shipPlacementController.resetPlayerShips(this.game.player2);
+
+    this.game.currentPlayer = this.game.player1;
+    this.game.opponent = this.game.player2;
+    this.game.gameState = "running";
+    this.game.winner = null;
+
+    const leftBoardShipPlacementContainer = document.querySelector(
+      "#left-board-ship-placement-container",
     );
-    gamePhaseChangeError.classList.add("hidden");
+    leftBoardShipPlacementContainer.classList.remove("hidden");
+    const rightBoardShipPlacementContainer = document.querySelector(
+      "#right-board-ship-placement-container",
+    );
+    rightBoardShipPlacementContainer.classList.remove("hidden");
+    const startGameButtonsContainer = document.querySelector(
+      "#start-game-buttons-container",
+    );
+    startGameButtonsContainer.classList.remove("hidden");
+    const playingGameButtonsContainer = document.querySelector(
+      "#playing-game-buttons-container",
+    );
+    playingGameButtonsContainer.classList.add("hidden");
+
+    this.renderer.updateGameBoard(
+      this.player1GameBoard,
+      this.game.player1,
+      true,
+    );
+
+    this.renderer.updateGameBoard(
+      this.player2GameBoard,
+      this.game.player2,
+      false,
+    );
+
+    this.populateLeftBoardShipDropdown();
+    this.populateRightBoardShipDropdown();
+
+    const leftBoardManualPlacementError = document.querySelector(
+      "#left-board-manual-placement-error",
+    );
+    const rightBoardManualPlacementError = document.querySelector(
+      "#right-board-manual-placement-error",
+    );
+    leftBoardManualPlacementError.textContent = "";
+    rightBoardManualPlacementError.textContent = "";
 
     this.updateGameStatusMessage();
   }
@@ -246,73 +301,88 @@ class GameController {
     });
   }
 
-  setUpGamePhaseChangeButtons() {
-    const gamePhaseChangeError = document.querySelector(
-      "#game-phase-change-error",
+  setUpStartGameButtons() {
+    const startGameButtonsError = document.querySelector(
+      "#start-game-buttons-error",
     );
 
-    const startPlayingPhaseButton = document.querySelector(
-      "#start-playing-phase-button",
-    );
-    startPlayingPhaseButton.addEventListener("click", () => {
+    const startGameButton = document.querySelector("#start-game-button");
+    startGameButton.addEventListener("click", () => {
       if (this.game.canStartGame()) {
+        startGameButtonsError.textContent = "";
         this.startPlayingPhase();
       } else {
-        gamePhaseChangeError.textContent =
+        startGameButtonsError.textContent =
           "Please place all ships on both boards.";
         return;
       }
     });
 
-    const quickStartComputerButton = document.querySelector(
-      "#quick-start-computer-button",
-    );
-    quickStartComputerButton.addEventListener("click", () => {
+    const quickStartButton = document.querySelector("#quick-start-button");
+    quickStartButton.addEventListener("click", () => {
       if (this.game.isPlayerSetupComplete(this.game.player1)) {
         this.shipPlacementController.resetPlayerShips(this.game.player2);
         this.shipPlacementController.randomlyPlaceShips(this.game.player2);
         if (this.game.canStartGame()) {
+          startGameButtonsError.textContent = "";
           this.startPlayingPhase();
         }
       } else {
-        gamePhaseChangeError.textContent =
+        startGameButtonsError.textContent =
           "Please place all ships on your board.";
         return;
       }
     });
   }
 
-  addEventListeners(playerBoard, player, opponentBoard, opponent) {
+  setUpPlayingGameButtons() {
+    const startNewGameButton = document.querySelector("#start-new-game-button");
+    startNewGameButton.addEventListener("click", () => {
+      this.startNewGame();
+    });
+  }
+
+  addSquareEventListeners(playerBoard, player, opponentBoard, opponent) {
+    this.squareEventListenersController = new AbortController();
     const squares = opponentBoard.querySelectorAll(".game-board-square");
 
     squares.forEach((square) => {
-      square.addEventListener("click", () => {
-        if (this.game.gameState === "ended") {
-          return;
-        }
+      square.addEventListener(
+        "click",
+        () => {
+          if (this.game.gameState === "ended") {
+            return;
+          }
 
-        if (this.game.currentPlayer.type !== "real") {
-          return;
-        }
+          if (this.game.currentPlayer.type !== "real") {
+            return;
+          }
 
-        const row = parseInt(square.dataset.row);
-        const column = parseInt(square.dataset.column);
-        const coordinates = [row, column];
+          const row = parseInt(square.dataset.row);
+          const column = parseInt(square.dataset.column);
+          const coordinates = [row, column];
 
-        const result = this.game.processTurn(coordinates);
+          const result = this.game.processTurn(coordinates);
 
-        if (result === "already-attacked") {
-          return;
-        } else {
-          this.renderer.updateOpponentBoard(opponentBoard, opponent);
-          this.updateGameStatusMessage();
-          setTimeout(() => {
-            this.handleComputerTurn(playerBoard, player);
+          if (result === "already-attacked") {
+            return;
+          } else {
+            this.renderer.updateOpponentBoard(opponentBoard, opponent);
             this.updateGameStatusMessage();
-          }, 1000);
-        }
-      });
+            setTimeout(() => {
+              this.handleComputerTurn(playerBoard, player);
+              this.updateGameStatusMessage();
+            }, 1000);
+          }
+        },
+        { signal: this.squareEventListenersController.signal },
+      );
     });
+  }
+
+  removeSquareEventListeners() {
+    this.squareEventListenersController?.abort();
+    this.squareEventListenersController = null;
   }
 
   handleComputerTurn(playerBoard, player) {

@@ -21,7 +21,6 @@ class ShipPlacementController {
           coordinates,
           randomDirection,
         );
-        console.log(placementResult);
       } while (placementResult !== true);
     }
   }
