@@ -86,6 +86,12 @@ class GameBoard {
     }
   }
 
+  getShipAt(coordinates) {
+    const row = coordinates[0];
+    const column = coordinates[1];
+    return this.board[row][column];
+  }
+
   allShipsSunk() {
     if (this.ships.length === 0) {
       return false;
