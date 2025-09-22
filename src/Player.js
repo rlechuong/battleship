@@ -4,23 +4,36 @@ class Player {
   constructor(type) {
     this.type = type;
     this.gameBoard = new GameBoard();
+    this.computerAttackQueue = [];
+    this.computerAttackMode = "random";
+    this.computerLockedDirection = "";
   }
 
   computerAttack(opponentBoard) {
     if (opponentBoard.misses.size + opponentBoard.hits.size === 100) {
-      return false;
+      throw new Error(
+        "Cannot Attack: All Squares Attacked. Game Should Have Ended.",
+      );
     }
 
-    let attackResult;
+    let result;
+    let coordinates = [];
 
     do {
       const randomRow = Math.floor(Math.random() * 10);
       const randomColumn = Math.floor(Math.random() * 10);
 
-      attackResult = opponentBoard.receiveAttack([randomRow, randomColumn]);
-    } while (attackResult !== true && attackResult !== false);
+      result = opponentBoard.receiveAttack([randomRow, randomColumn]);
+      coordinates = [randomRow, randomColumn];
+    } while (result !== true && result !== false);
 
-    return true;
+    return { result: result, coordinates: coordinates };
+  }
+
+  updateComputerAttackStrategy(result, coordinates) {
+    if (result === true) {
+      this.computerAttackMode = "target";
+    }
   }
 }
 

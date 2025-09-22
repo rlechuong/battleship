@@ -222,7 +222,7 @@ describe("Game", () => {
       }
 
       expect(() => game.processTurn()).toThrow(
-        "Error: Invalid Game State: All Squares Attacked, Game Should Have Ended",
+        "Cannot Attack: All Squares Attacked. Game Should Have Ended.",
       );
     });
   });

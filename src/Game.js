@@ -29,17 +29,14 @@ class Game {
     let result;
 
     if (this.currentPlayer.type === "computer") {
-      result = this.currentPlayer.computerAttack(this.opponent.gameBoard);
-      if (
-        result === false &&
-        this.opponent.gameBoard.hits.size +
-          this.opponent.gameBoard.misses.size ===
-          100
-      ) {
-        throw new Error(
-          "Error: Invalid Game State: All Squares Attacked, Game Should Have Ended",
-        );
-      }
+      const attackInfo = this.currentPlayer.computerAttack(
+        this.opponent.gameBoard,
+      );
+      result = attackInfo.result;
+      this.currentPlayer.updateComputerAttackStrategy(
+        attackInfo.result,
+        attackInfo.coordinates,
+      );
     } else if (this.currentPlayer.type === "real") {
       result = this.opponent.gameBoard.receiveAttack(coordinates);
     }

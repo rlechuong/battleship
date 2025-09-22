@@ -1,6 +1,7 @@
 import { describe, test, expect } from "@jest/globals";
 import { GameBoard } from "./GameBoard.js";
 import { Player } from "./Player.js";
+import { Ship } from "./Ship.js";
 
 describe("Player", () => {
   describe("creation", () => {
@@ -24,7 +25,11 @@ describe("Player", () => {
       const realPlayer = new Player("real");
       const computerPlayer = new Player("computer");
 
-      expect(computerPlayer.computerAttack(realPlayer.gameBoard)).toBe(true);
+      const attackResult = computerPlayer.computerAttack(
+        realPlayer.gameBoard,
+      ).result;
+
+      expect([true, false]).toContain(attackResult);
     });
 
     test("computer should attack board if one square remains", () => {
@@ -41,7 +46,11 @@ describe("Player", () => {
         realPlayer.gameBoard.receiveAttack([i, 9]);
       }
 
-      expect(computerPlayer.computerAttack(realPlayer.gameBoard)).toBe(true);
+      const attackResult = computerPlayer.computerAttack(
+        realPlayer.gameBoard,
+      ).result;
+
+      expect([true, false]).toContain(attackResult);
     });
 
     test("computer should fail to attack board if no squares remain", () => {
@@ -54,7 +63,21 @@ describe("Player", () => {
         }
       }
 
-      expect(computerPlayer.computerAttack(realPlayer.gameBoard)).toBe(false);
+      expect(() => {
+        computerPlayer.computerAttack(realPlayer.gameBoard);
+      }).toThrow(
+        "Cannot Attack: All Squares Attacked. Game Should Have Ended.",
+      );
+    });
+  });
+
+  describe("updateComputerAttackStrategy()", () => {
+    test("computerAttackMode should change to target on hit", () => {
+      const computerPlayer = new Player("computer");
+
+      expect(computerPlayer.computerAttackMode).toBe("random");
+      computerPlayer.updateComputerAttackStrategy(true, [3, 4]);
+      expect(computerPlayer.computerAttackMode).toBe("target");
     });
   });
 });
