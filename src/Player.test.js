@@ -20,7 +20,7 @@ describe("Player", () => {
     });
   });
 
-  describe("computer attack", () => {
+  describe("computerAttack()", () => {
     test("computer should attack opponent's board", () => {
       const realPlayer = new Player("real");
       const computerPlayer = new Player("computer");
@@ -69,6 +69,42 @@ describe("Player", () => {
         "Cannot Attack: All Squares Attacked. Game Should Have Ended.",
       );
     });
+
+    test("should attack from computerAttackQueue when coordinates available", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+
+      computerPlayer.computerAttackQueue = [
+        [3, 3],
+        [4, 4],
+        [5, 5],
+      ];
+
+      const attackInfo = computerPlayer.computerAttack(realPlayer.gameBoard);
+
+      expect(attackInfo.coordinates).toEqual([3, 3]);
+      expect(computerPlayer.computerAttackQueue).toHaveLength(2);
+      expect(computerPlayer.computerAttackQueue).not.toContain([3, 3]);
+    });
+
+    test("should skip already-attacked coordinates when attacking from the queue", () => {
+      const realPlayer = new Player("real");
+      const computerPlayer = new Player("computer");
+
+      realPlayer.gameBoard.receiveAttack([3, 3]);
+
+      computerPlayer.computerAttackQueue = [
+        [3, 3],
+        [4, 4],
+        [5, 5],
+      ];
+
+      const attackInfo = computerPlayer.computerAttack(realPlayer.gameBoard);
+
+      expect(attackInfo.coordinates).toEqual([4, 4]);
+      expect(computerPlayer.computerAttackQueue).toHaveLength(1);
+      expect(computerPlayer.computerAttackQueue).toContainEqual([5, 5]);
+    });
   });
 
   describe("updateComputerAttackStrategy()", () => {
@@ -76,8 +112,22 @@ describe("Player", () => {
       const computerPlayer = new Player("computer");
 
       expect(computerPlayer.computerAttackMode).toBe("random");
-      computerPlayer.updateComputerAttackStrategy(true, [3, 4]);
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3]);
       expect(computerPlayer.computerAttackMode).toBe("target");
+    });
+
+    test("should fill computerAttackQueue with adjacent squares on hit", () => {
+      const computerPlayer = new Player("computer");
+
+      expect(computerPlayer.computerAttackQueue).toHaveLength(0);
+
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3]);
+
+      expect(computerPlayer.computerAttackQueue).toHaveLength(4);
+      expect(computerPlayer.computerAttackQueue).toContainEqual([2, 3]);
+      expect(computerPlayer.computerAttackQueue).toContainEqual([4, 3]);
+      expect(computerPlayer.computerAttackQueue).toContainEqual([3, 2]);
+      expect(computerPlayer.computerAttackQueue).toContainEqual([3, 4]);
     });
   });
 });
