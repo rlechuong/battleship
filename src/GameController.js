@@ -407,7 +407,7 @@ class GameController {
 
     if (this.phase === "setup" && this.game.gameState === "running") {
       gameStatusMessage.textContent = "Please Place Ships.";
-    } else if (this.phase === "setup" && this.game.gameState === "ended") {
+    } else if (this.game.gameState === "ended") {
       const winnerType =
         this.game.winner.type === "real" ? "You" : "The Computer";
       gameStatusMessage.textContent = `Game Over! ${winnerType} Won`;
