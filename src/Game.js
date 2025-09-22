@@ -36,6 +36,7 @@ class Game {
       this.currentPlayer.updateComputerAttackStrategy(
         attackInfo.result,
         attackInfo.coordinates,
+        this.opponent.gameBoard,
       );
     } else if (this.currentPlayer.type === "real") {
       result = this.opponent.gameBoard.receiveAttack(coordinates);
