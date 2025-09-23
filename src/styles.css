@@ -144,3 +144,83 @@ body {
 #right-board-manual-placement-error {
   color: darkred;
 }
+
+/* Draggable Ship Placement */
+
+.draggable-ships-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.draggable-placement-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.draggable-ship {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: grab;
+}
+
+.draggable-ship:hover {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.draggable-ship.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.draggable-ship-name {
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.draggable-ship-visual {
+  display: flex;
+  gap: 1px;
+}
+
+.draggable-ship-visual::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #666;
+  margin-right: 1px;
+}
+
+.draggable-ship-visual[data-length="2"]::before {
+  box-shadow: 20px 0 #666;
+}
+.draggable-ship-visual[data-length="3"]::before {
+  box-shadow:
+    20px 0 #666,
+    40px 0 #666;
+}
+.draggable-ship-visual[data-length="4"]::before {
+  box-shadow:
+    20px 0 #666,
+    40px 0 #666,
+    60px 0 #666;
+}
+.draggable-ship-visual[data-length="5"]::before {
+  box-shadow:
+    20px 0 #666,
+    40px 0 #666,
+    60px 0 #666,
+    80px 0 #666;
+}
