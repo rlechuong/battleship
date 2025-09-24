@@ -125,7 +125,7 @@ class ShipPlacementController {
 
     if (success) {
       this.renderer.updateGameBoard(gameBoard, player, true);
-      this.onShipPlaced(player);
+      this.notifyShipPlaced(player);
     }
 
     this.clearPlacementPreview();
@@ -182,7 +182,7 @@ class ShipPlacementController {
     });
   }
 
-  onShipPlaced(player) {
+  notifyShipPlaced(player) {
     if (this.callbacks.onShipPlaced) {
       this.callbacks.onShipPlaced(player);
     }

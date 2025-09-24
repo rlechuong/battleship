@@ -33,10 +33,33 @@ class GameController {
     this.populateLeftBoardShipDropdown();
     this.populateRightBoardShipDropdown();
     this.setUpShipPlacementButtons();
+
+    const shipPlacementCallbacks = {
+      onShipPlaced: (player) => {
+        console.log("Ship Placed! Updating UI...");
+
+        if (player === this.game.player1) {
+          this.populateLeftBoardShipDropdown();
+        } else if (player === this.game.player2) {
+          this.populateRightBoardShipDropdown();
+        }
+
+        this.clearPlacementErrors();
+      },
+    };
+
     this.shipPlacementController.setUpDragAndDrop(
       this.player1GameBoard,
       this.game.player1,
+      shipPlacementCallbacks,
     );
+
+    this.shipPlacementController.setUpDragAndDrop(
+      this.player2GameBoard,
+      this.game.player2,
+      shipPlacementCallbacks,
+    );
+
     this.setUpStartGameButtons();
     this.setUpPlayingGameButtons();
     this.updateGameStatusMessage();
@@ -122,16 +145,7 @@ class GameController {
 
     this.populateLeftBoardShipDropdown();
     this.populateRightBoardShipDropdown();
-
-    const leftBoardManualPlacementError = document.querySelector(
-      "#left-board-manual-placement-error",
-    );
-    const rightBoardManualPlacementError = document.querySelector(
-      "#right-board-manual-placement-error",
-    );
-    leftBoardManualPlacementError.textContent = "";
-    rightBoardManualPlacementError.textContent = "";
-
+    this.clearPlacementErrors();
     this.updateGameStatusMessage();
   }
 
@@ -156,8 +170,7 @@ class GameController {
         this.game.player1,
         true,
       );
-      leftBoardManualPlacementError.textContent = "";
-      rightBoardManualPlacementError.textContent = "";
+      this.clearPlacementErrors();
     });
 
     const leftBoardResetPlacementButton = document.querySelector(
@@ -171,8 +184,7 @@ class GameController {
         this.game.player1,
         true,
       );
-      leftBoardManualPlacementError.textContent = "";
-      rightBoardManualPlacementError.textContent = "";
+      this.clearPlacementErrors();
     });
 
     const rightBoardRandomPlacementButton = document.querySelector(
@@ -187,8 +199,7 @@ class GameController {
         this.game.player2,
         true,
       );
-      leftBoardManualPlacementError.textContent = "";
-      rightBoardManualPlacementError.textContent = "";
+      this.clearPlacementErrors();
     });
 
     const rightBoardResetPlacementButton = document.querySelector(
@@ -202,8 +213,7 @@ class GameController {
         this.game.player2,
         true,
       );
-      leftBoardManualPlacementError.textContent = "";
-      rightBoardManualPlacementError.textContent = "";
+      this.clearPlacementErrors();
     });
 
     const leftBoardManualPlacementButton = document.querySelector(
@@ -482,6 +492,18 @@ class GameController {
     const column = parseInt(columnNumber) - 1;
 
     return [row, column];
+  }
+
+  clearPlacementErrors() {
+    const leftBoardManualPlacementError = document.querySelector(
+      "#left-board-manual-placement-error",
+    );
+    const rightBoardManualPlacementError = document.querySelector(
+      "#right-board-manual-placement-error",
+    );
+
+    leftBoardManualPlacementError.textContent = "";
+    rightBoardManualPlacementError.textContent = "";
   }
 }
 
