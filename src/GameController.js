@@ -33,6 +33,10 @@ class GameController {
     this.populateLeftBoardShipDropdown();
     this.populateRightBoardShipDropdown();
     this.setUpShipPlacementButtons();
+    this.shipPlacementController.setUpDragAndDrop(
+      this.player1GameBoard,
+      this.game.player1,
+    );
     this.setUpStartGameButtons();
     this.setUpPlayingGameButtons();
     this.updateGameStatusMessage();
