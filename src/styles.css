@@ -225,6 +225,11 @@ body {
     80px 0 #666;
 }
 
+.draggable-ship-visual.vertical {
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
 .dragging {
   opacity: 0.5;
   cursor: grabbing;

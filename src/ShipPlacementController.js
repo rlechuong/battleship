@@ -4,6 +4,7 @@ class ShipPlacementController {
     this.renderer = renderer;
     this.currentDragData = null;
     this.callbacks = {};
+    this.rotateDraggableShipsSetup = false;
   }
 
   randomlyPlaceShips(player) {
@@ -34,6 +35,17 @@ class ShipPlacementController {
   setUpDragAndDrop(gameBoard, player, callbacks = {}) {
     this.callbacks = callbacks;
 
+    if (!this.rotateDraggableShipsSetup) {
+      const draggableShips = document.querySelectorAll(".draggable-ship");
+      draggableShips.forEach((ship) => {
+        ship.addEventListener("contextmenu", (event) => {
+          event.preventDefault();
+          this.rotateDraggableShip(event.target);
+        });
+      });
+      this.rotateDraggableShipsSetup = true;
+    }
+
     const draggableShips = document.querySelectorAll(".draggable-ship");
     draggableShips.forEach((ship) => {
       ship.addEventListener("dragstart", (event) => {
@@ -59,19 +71,19 @@ class ShipPlacementController {
   }
 
   handleDragStart(event) {
-    console.log("handleDragStart called"); // Add this line
+    console.log("handleDragStart called");
     const shipType = event.target.dataset.shipType;
     const shipLength = parseInt(event.target.dataset.length);
+    const direction = event.target.dataset.direction || "horizontal";
 
     const shipData = {
       shipType: shipType,
       length: shipLength,
-      direction: "horizontal",
+      direction: direction,
     };
 
     event.dataTransfer.setData("application/json", JSON.stringify(shipData));
     this.currentDragData = shipData;
-
     event.target.classList.add("dragging");
   }
 
@@ -81,19 +93,39 @@ class ShipPlacementController {
     this.currentDragData = null;
   }
 
+  rotateDraggableShip(shipElement) {
+    let currentDirection = shipElement.dataset.direction || "horizontal";
+
+    const newDirection =
+      currentDirection === "horizontal" ? "vertical" : "horizontal";
+
+    shipElement.dataset.direction = newDirection;
+
+    console.log(`Ship rotated to: ${newDirection}`);
+
+    const visual = shipElement.querySelector(".draggable-ship-visual");
+    if (visual) {
+      if (newDirection === "vertical") {
+        visual.classList.add("vertical");
+      } else {
+        visual.classList.remove("vertical");
+      }
+    }
+  }
+
   handleDragOver(event, gameBoard, player) {
-    console.log("handleDragOver called"); // Add this line
+    console.log("handleDragOver called");
     event.preventDefault();
 
     if (!this.currentDragData) {
-      console.log("No data found, returning"); // Add this line
+      console.log("No data found, returning");
       return;
     }
 
     const shipData = this.currentDragData;
     const row = parseInt(event.target.dataset.row);
     const column = parseInt(event.target.dataset.column);
-    console.log("Using stored data:", shipData, "at position:", row, column); // Add this line
+    console.log("Using stored data:", shipData, "at position:", row, column);
 
     this.showPlacementPreview(
       gameBoard,
