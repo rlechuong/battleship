@@ -12,6 +12,11 @@ class GameController {
     this.squareEventListenersController = null;
   }
 
+  /**
+   * Initializes the game by creating game boards, setting up UI controls, and
+   * preparing event listeners
+   * @returns {void}
+   */
   initializeGame() {
     this.player1GameBoard = this.renderer.createGameBoard();
     this.player2GameBoard = this.renderer.createGameBoard();
@@ -88,23 +93,38 @@ class GameController {
       false,
     );
 
+    const draggablePlacementContainer = document.querySelector(
+      "#draggable-placement-container",
+    );
     const leftBoardShipPlacementContainer = document.querySelector(
       "#left-board-ship-placement-container",
     );
-    leftBoardShipPlacementContainer.classList.add("hidden");
     const rightBoardShipPlacementContainer = document.querySelector(
       "#right-board-ship-placement-container",
     );
-    rightBoardShipPlacementContainer.classList.add("hidden");
     const startGameButtonsContainer = document.querySelector(
       "#start-game-buttons-container",
     );
-    startGameButtonsContainer.classList.add("hidden");
     const playingGameButtonsContainer = document.querySelector(
       "#playing-game-buttons-container",
     );
-    playingGameButtonsContainer.classList.remove("hidden");
 
+    if (
+      !draggablePlacementContainer ||
+      !leftBoardShipPlacementContainer ||
+      !rightBoardShipPlacementContainer ||
+      !startGameButtonsContainer ||
+      !playingGameButtonsContainer
+    ) {
+      console.error("UI Container Not Found When Starting Playing Phase.");
+      return;
+    }
+
+    draggablePlacementContainer.classList.add("hidden");
+    rightBoardShipPlacementContainer.classList.add("hidden");
+    leftBoardShipPlacementContainer.classList.add("hidden");
+    startGameButtonsContainer.classList.add("hidden");
+    playingGameButtonsContainer.classList.remove("hidden");
     this.updateGameStatusMessage();
   }
 
@@ -121,21 +141,37 @@ class GameController {
     this.game.gameState = "running";
     this.game.winner = null;
 
+    const draggablePlacementContainer = document.querySelector(
+      "#draggable-placement-container",
+    );
     const leftBoardShipPlacementContainer = document.querySelector(
       "#left-board-ship-placement-container",
     );
-    leftBoardShipPlacementContainer.classList.remove("hidden");
     const rightBoardShipPlacementContainer = document.querySelector(
       "#right-board-ship-placement-container",
     );
-    rightBoardShipPlacementContainer.classList.remove("hidden");
     const startGameButtonsContainer = document.querySelector(
       "#start-game-buttons-container",
     );
-    startGameButtonsContainer.classList.remove("hidden");
     const playingGameButtonsContainer = document.querySelector(
       "#playing-game-buttons-container",
     );
+
+    if (
+      !draggablePlacementContainer ||
+      !leftBoardShipPlacementContainer ||
+      !rightBoardShipPlacementContainer ||
+      !startGameButtonsContainer ||
+      !playingGameButtonsContainer
+    ) {
+      console.error("UI Container Not Found When Starting New Game.");
+      return;
+    }
+
+    draggablePlacementContainer.classList.remove("hidden");
+    leftBoardShipPlacementContainer.classList.remove("hidden");
+    rightBoardShipPlacementContainer.classList.remove("hidden");
+    startGameButtonsContainer.classList.remove("hidden");
     playingGameButtonsContainer.classList.add("hidden");
 
     this.renderer.updateGameBoard(
@@ -219,6 +255,63 @@ class GameController {
     this.handleManualPlacementButton(false);
   }
 
+  setUpStartGameButtons() {
+    const startGameButton = document.querySelector("#start-game-button");
+    const quickStartButton = document.querySelector("#quick-start-button");
+    const startGameButtonsError = document.querySelector(
+      "#start-game-buttons-error",
+    );
+
+    if (!startGameButton || !quickStartButton || !startGameButtonsError) {
+      console.error("Start Game Button Or Error Element Not Found.");
+      return;
+    }
+
+    startGameButton.addEventListener("click", () => {
+      if (this.game.canStartGame()) {
+        startGameButtonsError.textContent = "";
+        this.startPlayingPhase();
+      } else {
+        startGameButtonsError.textContent =
+          "Please place all ships on both boards.";
+        return;
+      }
+    });
+
+    quickStartButton.addEventListener("click", () => {
+      if (this.game.isPlayerSetupComplete(this.game.player1)) {
+        this.shipPlacementController.resetPlayerShips(this.game.player2);
+        this.shipPlacementController.randomlyPlaceShips(this.game.player2);
+        if (this.game.canStartGame()) {
+          startGameButtonsError.textContent = "";
+          this.startPlayingPhase();
+        }
+      } else {
+        startGameButtonsError.textContent =
+          "Please place all ships on your board.";
+        return;
+      }
+    });
+  }
+
+  setUpPlayingGameButtons() {
+    const startNewGameButton = document.querySelector("#start-new-game-button");
+
+    if (!startNewGameButton) {
+      console.error("Start New Game Button Not Found.");
+      return;
+    }
+
+    startNewGameButton.addEventListener("click", () => {
+      this.startNewGame();
+    });
+  }
+
+  /**
+   * Sets up event listeners for manual placement button for a specific board
+   * @param {boolean} isLeftBoard - True for left board, false for right board
+   * @returns {void}
+   */
   handleManualPlacementButton(isLeftBoard) {
     const boardSide = isLeftBoard ? "left" : "right";
     const player = isLeftBoard ? this.game.player1 : this.game.player2;
@@ -287,47 +380,16 @@ class GameController {
     });
   }
 
-  setUpStartGameButtons() {
-    const startGameButtonsError = document.querySelector(
-      "#start-game-buttons-error",
-    );
-
-    const startGameButton = document.querySelector("#start-game-button");
-    startGameButton.addEventListener("click", () => {
-      if (this.game.canStartGame()) {
-        startGameButtonsError.textContent = "";
-        this.startPlayingPhase();
-      } else {
-        startGameButtonsError.textContent =
-          "Please place all ships on both boards.";
-        return;
-      }
-    });
-
-    const quickStartButton = document.querySelector("#quick-start-button");
-    quickStartButton.addEventListener("click", () => {
-      if (this.game.isPlayerSetupComplete(this.game.player1)) {
-        this.shipPlacementController.resetPlayerShips(this.game.player2);
-        this.shipPlacementController.randomlyPlaceShips(this.game.player2);
-        if (this.game.canStartGame()) {
-          startGameButtonsError.textContent = "";
-          this.startPlayingPhase();
-        }
-      } else {
-        startGameButtonsError.textContent =
-          "Please place all ships on your board.";
-        return;
-      }
-    });
-  }
-
-  setUpPlayingGameButtons() {
-    const startNewGameButton = document.querySelector("#start-new-game-button");
-    startNewGameButton.addEventListener("click", () => {
-      this.startNewGame();
-    });
-  }
-
+  /**
+   * Sets up click event listeners on opponent's board squares to handle player
+   * attacks and computer counterattack
+   * @param {HTMLElement} playerBoard - The current player's board (for
+   * computer counterattack)
+   * @param {Player} player - The current player
+   * @param {HTMLElement} opponentBoard - The opponent's board (where event
+   * listeners are attached to squares)
+   * @param {Player} opponent - The opponent player
+   */
   addSquareEventListeners(playerBoard, player, opponentBoard, opponent) {
     this.squareEventListenersController = new AbortController();
     const squares = opponentBoard.querySelectorAll(".game-board-square");
@@ -404,6 +466,12 @@ class GameController {
     }
   }
 
+  /**
+   * Populates dropdown with ships available to place and manages state of
+   * manual placement button for a specific board
+   * @param {boolean} isLeftBoard - True for left board, false for right board
+   * @returns {void}
+   */
   populateShipDropdown(isLeftBoard) {
     const boardSide = isLeftBoard ? "left" : "right";
     const player = isLeftBoard ? this.game.player1 : this.game.player2;
@@ -442,6 +510,11 @@ class GameController {
     this.populateShipDropdown(false);
   }
 
+  /**
+   * Parses input coordinates (e.g., "A1") into array format [row, column]
+   * @param {string} input - User input string coordinates (e.g., "A1", "J10")
+   * @returns {number[]|null} Array [row, column] or null if invalid
+   */
   parseCoordinates(input) {
     const coordinates = input.trim().toUpperCase();
     const validPattern = /^[A-J]([1-9]|10)$/.test(coordinates);
