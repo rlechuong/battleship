@@ -1,4 +1,7 @@
 class GameController {
+  static COMPUTER_TURN_DELAY_MS = 1000;
+  static ASCII_OFFSET_A = 65;
+
   constructor(game, renderer, shipPlacementController) {
     this.game = game;
     this.renderer = renderer;
@@ -14,9 +17,15 @@ class GameController {
     this.player2GameBoard = this.renderer.createGameBoard();
 
     const leftBoard = document.querySelector("#left-board");
-    leftBoard.appendChild(this.player1GameBoard);
-
     const rightBoard = document.querySelector("#right-board");
+
+    if (!leftBoard || !rightBoard) {
+      throw new Error(
+        "Critical Game Board Container Missing - Cannot Initialize",
+      );
+    }
+
+    leftBoard.appendChild(this.player1GameBoard);
     rightBoard.appendChild(this.player2GameBoard);
 
     this.renderer.updateGameBoard(
@@ -36,8 +45,6 @@ class GameController {
 
     const shipPlacementCallbacks = {
       onShipPlaced: (player) => {
-        console.log("Ship Placed! Updating UI...");
-
         if (player === this.game.player1) {
           this.populateLeftBoardShipDropdown();
         } else if (player === this.game.player2) {
@@ -150,14 +157,6 @@ class GameController {
   }
 
   setUpShipPlacementButtons() {
-    const leftBoardManualPlacementError = document.querySelector(
-      "#left-board-manual-placement-error",
-    );
-
-    const rightBoardManualPlacementError = document.querySelector(
-      "#right-board-manual-placement-error",
-    );
-
     const leftBoardRandomPlacementButton = document.querySelector(
       "#left-board-random-placement-button",
     );
@@ -216,101 +215,74 @@ class GameController {
       this.clearPlacementErrors();
     });
 
-    const leftBoardManualPlacementButton = document.querySelector(
-      "#left-board-manual-placement-button",
+    this.handleManualPlacementButton(true);
+    this.handleManualPlacementButton(false);
+  }
+
+  handleManualPlacementButton(isLeftBoard) {
+    const boardSide = isLeftBoard ? "left" : "right";
+    const player = isLeftBoard ? this.game.player1 : this.game.player2;
+    const gameBoard = isLeftBoard
+      ? this.player1GameBoard
+      : this.player2GameBoard;
+
+    const dropdown = document.querySelector(
+      `#${boardSide}-board-manual-ship-dropdown`,
+    );
+    const coordinatesInput = document.querySelector(
+      `#${boardSide}-board-manual-coordinates-input`,
+    );
+    const button = document.querySelector(
+      `#${boardSide}-board-manual-placement-button`,
+    );
+    const errorElement = document.querySelector(
+      `#${boardSide}-board-manual-placement-error`,
     );
 
-    leftBoardManualPlacementButton.addEventListener("click", () => {
-      const leftBoardManualCoordinatesInput = document.querySelector(
-        "#left-board-manual-coordinates-input",
+    if (!dropdown || !coordinatesInput || !button || !errorElement) {
+      console.error(`Manual Placement Element Missing For ${boardSide} Board.`);
+      return;
+    }
+
+    button.addEventListener("click", () => {
+      const directionInput = document.querySelector(
+        `input[name="${boardSide}-board-manual-direction-input"]:checked`,
       );
-      const coordinatesInput = leftBoardManualCoordinatesInput.value;
-      const coordinates = this.parseCoordinates(coordinatesInput);
-      if (coordinates === null) {
-        leftBoardManualPlacementError.textContent =
-          "Invalid Coordinates. Please Enter A1-J10.";
+
+      if (!directionInput) {
+        console.error(`Direction Input Missing For ${boardSide} Board.`);
         return;
       }
 
-      const leftBoardManualShipDropdown = document.querySelector(
-        "#left-board-manual-ship-dropdown",
-      );
-      const ship = leftBoardManualShipDropdown.value;
+      const coordinatesInputValue = coordinatesInput.value;
+      const coordinates = this.parseCoordinates(coordinatesInputValue);
+      if (coordinates === null) {
+        errorElement.textContent = "Invalid Coordinates. Please Enter A1-J10.";
+        return;
+      }
 
-      const leftBoardManualDirectionInput = document.querySelector(
-        `input[name="left-board-manual-direction-input"]:checked`,
-      );
-      const direction = leftBoardManualDirectionInput.value;
+      const ship = dropdown.value;
+      const direction = directionInput.value;
 
       const success = this.game.placePlayerShip(
-        this.game.player1,
+        player,
         ship,
         coordinates,
         direction,
       );
 
       if (success) {
-        this.renderer.updateGameBoard(
-          this.player1GameBoard,
-          this.game.player1,
-          true,
-        );
+        this.renderer.updateGameBoard(gameBoard, player, true);
+        if (isLeftBoard) {
+          this.populateLeftBoardShipDropdown();
+        } else {
+          this.populateRightBoardShipDropdown();
+        }
 
-        this.populateLeftBoardShipDropdown();
-        leftBoardManualCoordinatesInput.value = "";
-        leftBoardManualPlacementError.textContent = "";
+        coordinatesInput.value = "";
+        errorElement.textContent = "";
       } else {
-        leftBoardManualPlacementError.textContent =
-          "Ship Cannot Be Placed There.";
-      }
-    });
-
-    const rightBoardManualPlacementButton = document.querySelector(
-      "#right-board-manual-placement-button",
-    );
-
-    rightBoardManualPlacementButton.addEventListener("click", () => {
-      const rightBoardManualCoordinatesInput = document.querySelector(
-        "#right-board-manual-coordinates-input",
-      );
-      const coordinatesInput = rightBoardManualCoordinatesInput.value;
-      const coordinates = this.parseCoordinates(coordinatesInput);
-      if (coordinates === null) {
-        rightBoardManualPlacementError.textContent =
-          "Invalid Coordinates. Please Enter A1-J10.";
-        return;
-      }
-
-      const rightBoardManualShipDropdown = document.querySelector(
-        "#right-board-manual-ship-dropdown",
-      );
-      const ship = rightBoardManualShipDropdown.value;
-
-      const rightBoardManualDirectionInput = document.querySelector(
-        `input[name="right-board-manual-direction-input"]:checked`,
-      );
-      const direction = rightBoardManualDirectionInput.value;
-
-      const success = this.game.placePlayerShip(
-        this.game.player2,
-        ship,
-        coordinates,
-        direction,
-      );
-
-      if (success) {
-        this.renderer.updateGameBoard(
-          this.player2GameBoard,
-          this.game.player2,
-          true,
-        );
-
-        this.populateRightBoardShipDropdown();
-        rightBoardManualCoordinatesInput.value = "";
-        rightBoardManualPlacementError.textContent = "";
-      } else {
-        rightBoardManualPlacementError.textContent =
-          "Ship Cannot Be Placed There.";
+        errorElement.textContent = "Ship Cannot Be Placed There.";
       }
     });
   }
@@ -386,7 +358,7 @@ class GameController {
             setTimeout(() => {
               this.handleComputerTurn(playerBoard, player);
               this.updateGameStatusMessage();
-            }, 1000);
+            }, GameController.COMPUTER_TURN_DELAY_MS);
           }
         },
         { signal: this.squareEventListenersController.signal },
@@ -432,50 +404,42 @@ class GameController {
     }
   }
 
-  populateLeftBoardShipDropdown() {
-    const leftBoardManualShipDropdown = document.querySelector(
-      "#left-board-manual-ship-dropdown",
-    );
-    const leftBoardManualPlaceShipButton = document.querySelector(
-      "#left-board-manual-placement-button",
-    );
-    const unplacedShips = this.game.getUnplacedShips(this.game.player1);
+  populateShipDropdown(isLeftBoard) {
+    const boardSide = isLeftBoard ? "left" : "right";
+    const player = isLeftBoard ? this.game.player1 : this.game.player2;
 
-    leftBoardManualShipDropdown.options.length = 0;
+    const dropdown = document.querySelector(
+      `#${boardSide}-board-manual-ship-dropdown`,
+    );
+    const button = document.querySelector(
+      `#${boardSide}-board-manual-placement-button`,
+    );
+
+    if (!dropdown || !button) {
+      console.error(
+        `Required DOM Elements Not Found For ${boardSide} Board Dropdown`,
+      );
+      return;
+    }
+
+    const unplacedShips = this.game.getUnplacedShips(player);
+
+    dropdown.options.length = 0;
     unplacedShips.forEach((ship) => {
       const option = document.createElement("option");
       option.textContent = ship;
-      leftBoardManualShipDropdown.appendChild(option);
+      dropdown.appendChild(option);
     });
 
-    if (unplacedShips.length === 0) {
-      leftBoardManualPlaceShipButton.disabled = true;
-    } else {
-      leftBoardManualPlaceShipButton.disabled = false;
-    }
+    button.disabled = unplacedShips.length === 0;
+  }
+
+  populateLeftBoardShipDropdown() {
+    this.populateShipDropdown(true);
   }
 
   populateRightBoardShipDropdown() {
-    const rightBoardManualShipDropdown = document.querySelector(
-      "#right-board-manual-ship-dropdown",
-    );
-    const rightBoardManualPlaceShipButton = document.querySelector(
-      "#right-board-manual-placement-button",
-    );
-    const unplacedShips = this.game.getUnplacedShips(this.game.player2);
-
-    rightBoardManualShipDropdown.options.length = 0;
-    unplacedShips.forEach((ship) => {
-      const option = document.createElement("option");
-      option.textContent = ship;
-      rightBoardManualShipDropdown.appendChild(option);
-    });
-
-    if (unplacedShips.length === 0) {
-      rightBoardManualPlaceShipButton.disabled = true;
-    } else {
-      rightBoardManualPlaceShipButton.disabled = false;
-    }
+    this.populateShipDropdown(false);
   }
 
   parseCoordinates(input) {
@@ -488,7 +452,7 @@ class GameController {
     const rowLetter = coordinates[0];
     const columnNumber = coordinates.slice(1);
 
-    const row = rowLetter.charCodeAt(0) - 65;
+    const row = rowLetter.charCodeAt(0) - GameController.ASCII_OFFSET_A;
     const column = parseInt(columnNumber) - 1;
 
     return [row, column];
@@ -501,6 +465,11 @@ class GameController {
     const rightBoardManualPlacementError = document.querySelector(
       "#right-board-manual-placement-error",
     );
+
+    if (!leftBoardManualPlacementError || !rightBoardManualPlacementError) {
+      console.error("Placement Error Elements Not Found");
+      return;
+    }
 
     leftBoardManualPlacementError.textContent = "";
     rightBoardManualPlacementError.textContent = "";
