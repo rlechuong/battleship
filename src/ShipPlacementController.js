@@ -71,7 +71,6 @@ class ShipPlacementController {
   }
 
   handleDragStart(event) {
-    console.log("handleDragStart called");
     const shipType = event.target.dataset.shipType;
     const shipLength = parseInt(event.target.dataset.length);
     const direction = event.target.dataset.direction || "horizontal";
@@ -101,8 +100,6 @@ class ShipPlacementController {
 
     shipElement.dataset.direction = newDirection;
 
-    console.log(`Ship rotated to: ${newDirection}`);
-
     const visual = shipElement.querySelector(".draggable-ship-visual");
     if (visual) {
       if (newDirection === "vertical") {
@@ -114,18 +111,15 @@ class ShipPlacementController {
   }
 
   handleDragOver(event, gameBoard, player) {
-    console.log("handleDragOver called");
     event.preventDefault();
 
     if (!this.currentDragData) {
-      console.log("No data found, returning");
       return;
     }
 
     const shipData = this.currentDragData;
     const row = parseInt(event.target.dataset.row);
     const column = parseInt(event.target.dataset.column);
-    console.log("Using stored data:", shipData, "at position:", row, column);
 
     this.showPlacementPreview(
       gameBoard,
