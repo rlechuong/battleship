@@ -15,77 +15,80 @@
       <div id="left">
         <div id="left-header">Your Board</div>
         <div id="left-board"></div>
-        <div id="left-board-ship-placement-container">
-          <div id="left-board-draggable-placement-container">
-            <div class="draggable-placement-header">Draggable Ships</div>
-            <div class="draggable-ships-container">
-              <!-- Left Carrier -->
+        <div id="draggable-placement-container">
+          <div class="draggable-placement-header">Draggable Ships</div>
+          <div class="draggable-placement-info">
+            Right click a ship to change its direction before dragging!
+          </div>
+          <div class="draggable-ships-container">
+            <!-- Carrier -->
+            <div
+              class="draggable-ship"
+              data-ship-type="Carrier"
+              data-length="5"
+              draggable="true"
+            >
+              <div class="draggable-ship-name">Carrier (5)</div>
               <div
-                class="draggable-ship"
-                data-ship-type="Carrier"
+                class="draggable-ship-visual horizontal"
                 data-length="5"
-                draggable="true"
-              >
-                <div class="draggable-ship-name">Carrier (5)</div>
-                <div
-                  class="draggable-ship-visual horizontal"
-                  data-length="5"
-                ></div>
-              </div>
-              <!-- Left Battleship -->
+              ></div>
+            </div>
+            <!-- Battleship -->
+            <div
+              class="draggable-ship"
+              data-ship-type="Battleship"
+              data-length="4"
+              draggable="true"
+            >
+              <div class="draggable-ship-name">Battleship (4)</div>
               <div
-                class="draggable-ship"
-                data-ship-type="Battleship"
+                class="draggable-ship-visual horizontal"
                 data-length="4"
-                draggable="true"
-              >
-                <div class="draggable-ship-name">Battleship (4)</div>
-                <div
-                  class="draggable-ship-visual horizontal"
-                  data-length="4"
-                ></div>
-              </div>
-              <!-- Left Cruiser -->
+              ></div>
+            </div>
+            <!-- Cruiser -->
+            <div
+              class="draggable-ship"
+              data-ship-type="Cruiser"
+              data-length="3"
+              draggable="true"
+            >
+              <div class="draggable-ship-name">Cruiser (3)</div>
               <div
-                class="draggable-ship"
-                data-ship-type="Cruiser"
+                class="draggable-ship-visual horizontal"
                 data-length="3"
-                draggable="true"
-              >
-                <div class="draggable-ship-name">Cruiser (3)</div>
-                <div
-                  class="draggable-ship-visual horizontal"
-                  data-length="3"
-                ></div>
-              </div>
-              <!-- Left Submarine -->
+              ></div>
+            </div>
+            <!-- Submarine -->
+            <div
+              class="draggable-ship"
+              data-ship-type="Submarine"
+              data-length="3"
+              draggable="true"
+            >
+              <div class="draggable-ship-name">Submarine (3)</div>
               <div
-                class="draggable-ship"
-                data-ship-type="Submarine"
+                class="draggable-ship-visual horizontal"
                 data-length="3"
-                draggable="true"
-              >
-                <div class="draggable-ship-name">Submarine (3)</div>
-                <div
-                  class="draggable-ship-visual horizontal"
-                  data-length="3"
-                ></div>
-              </div>
-              <!-- Left Destroyer -->
+              ></div>
+            </div>
+            <!-- Destroyer -->
+            <div
+              class="draggable-ship"
+              data-ship-type="Destroyer"
+              data-length="2"
+              draggable="true"
+            >
+              <div class="draggable-ship-name">Destroyer (2)</div>
               <div
-                class="draggable-ship"
-                data-ship-type="Destroyer"
+                class="draggable-ship-visual horizontal"
                 data-length="2"
-                draggable="true"
-              >
-                <div class="draggable-ship-name">Destroyer (2)</div>
-                <div
-                  class="draggable-ship-visual horizontal"
-                  data-length="2"
-                ></div>
-              </div>
+              ></div>
             </div>
           </div>
+        </div>
+        <div id="left-board-ship-placement-container">
           <div id="left-board-manual-placement-container">
             <label for="left-board-manual-ship-dropdown">Ship:</label>
             <select
