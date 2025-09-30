@@ -25,9 +25,7 @@ describe("Player", () => {
       const realPlayer = new Player("real");
       const computerPlayer = new Player("computer");
 
-      const attackResult = computerPlayer.computerAttack(
-        realPlayer.gameBoard,
-      ).result;
+      const attackResult = computerPlayer.computerAttack(realPlayer.gameBoard).result;
 
       expect([true, false]).toContain(attackResult);
     });
@@ -46,9 +44,7 @@ describe("Player", () => {
         realPlayer.gameBoard.receiveAttack([i, 9]);
       }
 
-      const attackResult = computerPlayer.computerAttack(
-        realPlayer.gameBoard,
-      ).result;
+      const attackResult = computerPlayer.computerAttack(realPlayer.gameBoard).result;
 
       expect([true, false]).toContain(attackResult);
     });
@@ -65,9 +61,7 @@ describe("Player", () => {
 
       expect(() => {
         computerPlayer.computerAttack(realPlayer.gameBoard);
-      }).toThrow(
-        "Cannot Attack: All Squares Attacked. Game Should Have Ended.",
-      );
+      }).toThrow("Cannot Attack: All Squares Attacked. Game Should Have Ended.");
     });
 
     test("should attack from computerAttackQueue when coordinates available", () => {
@@ -113,11 +107,7 @@ describe("Player", () => {
       const computerPlayer = new Player("computer");
 
       expect(computerPlayer.computerAttackMode).toBe("random");
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
       expect(computerPlayer.computerAttackMode).toBe("target");
     });
 
@@ -126,17 +116,9 @@ describe("Player", () => {
       const computerPlayer = new Player("computer");
 
       expect(computerPlayer.computerAttackMode).toBe("random");
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
       expect(computerPlayer.computerAttackMode).toBe("target");
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 4],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 4], realPlayer.gameBoard);
       expect(computerPlayer.computerAttackMode).toBe("locked");
       expect(computerPlayer.computerLockedDirection).toBe("horizontal");
     });
@@ -146,17 +128,9 @@ describe("Player", () => {
       const computerPlayer = new Player("computer");
 
       expect(computerPlayer.computerAttackMode).toBe("random");
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
       expect(computerPlayer.computerAttackMode).toBe("target");
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [4, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [4, 3], realPlayer.gameBoard);
       expect(computerPlayer.computerAttackMode).toBe("locked");
       expect(computerPlayer.computerLockedDirection).toBe("vertical");
     });
@@ -167,11 +141,7 @@ describe("Player", () => {
 
       expect(computerPlayer.computerAttackQueue).toHaveLength(0);
 
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
 
       expect(computerPlayer.computerAttackQueue).toHaveLength(4);
       expect(computerPlayer.computerAttackQueue).toContainEqual([2, 3]);
@@ -189,16 +159,8 @@ describe("Player", () => {
         [1, 1],
       ];
 
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 4],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
+      computerPlayer.updateComputerAttackStrategy(true, [3, 4], realPlayer.gameBoard);
 
       expect(computerPlayer.computerAttackMode).toBe("locked");
       expect(computerPlayer.computerLockedDirection).toBe("horizontal");
@@ -216,16 +178,8 @@ describe("Player", () => {
         [1, 1],
       ];
 
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [4, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
+      computerPlayer.updateComputerAttackStrategy(true, [4, 3], realPlayer.gameBoard);
 
       expect(computerPlayer.computerAttackMode).toBe("locked");
       expect(computerPlayer.computerLockedDirection).toBe("vertical");
@@ -242,18 +196,10 @@ describe("Player", () => {
       realPlayer.gameBoard.placeShip(ship, [3, 3], "horizontal");
 
       realPlayer.gameBoard.receiveAttack([3, 3]);
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 3],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 3], realPlayer.gameBoard);
 
       realPlayer.gameBoard.receiveAttack([3, 4]);
-      computerPlayer.updateComputerAttackStrategy(
-        true,
-        [3, 4],
-        realPlayer.gameBoard,
-      );
+      computerPlayer.updateComputerAttackStrategy(true, [3, 4], realPlayer.gameBoard);
 
       expect(computerPlayer.computerAttackQueue).toHaveLength(0);
       expect(computerPlayer.computerAttackMode).toBe("random");

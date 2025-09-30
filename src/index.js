@@ -11,10 +11,6 @@ const game = new Game(realPlayer1, computerPlayer2);
 
 const renderer = new Renderer();
 const shipPlacementController = new ShipPlacementController(game, renderer);
-const gameController = new GameController(
-  game,
-  renderer,
-  shipPlacementController,
-);
+const gameController = new GameController(game, renderer, shipPlacementController);
 
 gameController.initializeGame();

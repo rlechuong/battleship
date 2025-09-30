@@ -12,9 +12,7 @@ class Player {
 
   computerAttack(opponentBoard) {
     if (opponentBoard.misses.size + opponentBoard.hits.size === 100) {
-      throw new Error(
-        "Cannot Attack: All Squares Attacked. Game Should Have Ended.",
-      );
+      throw new Error("Cannot Attack: All Squares Attacked. Game Should Have Ended.");
     }
 
     if (this.computerAttackQueue.length !== 0) {
@@ -99,24 +97,15 @@ class Player {
         return;
       }
 
-      if (
-        this.computerCurrentTargetHits.length >= 2 &&
-        this.computerAttackMode === "target"
-      ) {
-        const lastHit =
-          this.computerCurrentTargetHits[
-            this.computerCurrentTargetHits.length - 1
-          ];
+      if (this.computerCurrentTargetHits.length >= 2 && this.computerAttackMode === "target") {
+        const lastHit = this.computerCurrentTargetHits[this.computerCurrentTargetHits.length - 1];
 
         const secondLastHit =
-          this.computerCurrentTargetHits[
-            this.computerCurrentTargetHits.length - 2
-          ];
+          this.computerCurrentTargetHits[this.computerCurrentTargetHits.length - 2];
 
         if (
           lastHit[0] === secondLastHit[0] &&
-          (lastHit[1] - secondLastHit[1] === 1 ||
-            lastHit[1] - secondLastHit[1] === -1)
+          (lastHit[1] - secondLastHit[1] === 1 || lastHit[1] - secondLastHit[1] === -1)
         ) {
           this.computerAttackMode = "locked";
           this.computerLockedDirection = "horizontal";
@@ -137,8 +126,7 @@ class Player {
           }
         } else if (
           lastHit[1] === secondLastHit[1] &&
-          (lastHit[0] - secondLastHit[0] === 1 ||
-            lastHit[0] - secondLastHit[0] === -1)
+          (lastHit[0] - secondLastHit[0] === 1 || lastHit[0] - secondLastHit[0] === -1)
         ) {
           this.computerAttackMode = "locked";
           this.computerLockedDirection = "vertical";

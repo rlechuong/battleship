@@ -113,10 +113,7 @@ describe("Game", () => {
       const initialOpponent = game.opponent;
 
       expect([true, false]).toContain(game.processTurn());
-      expect(
-        initialOpponent.gameBoard.hits.size +
-          initialOpponent.gameBoard.misses.size,
-      ).toBe(1);
+      expect(initialOpponent.gameBoard.hits.size + initialOpponent.gameBoard.misses.size).toBe(1);
       expect(game.currentPlayer).toBe(initialOpponent);
     });
 
@@ -132,10 +129,7 @@ describe("Game", () => {
       const initialOpponent = game.opponent;
 
       expect([true, false]).toContain(game.processTurn([0, 0]));
-      expect(
-        initialOpponent.gameBoard.hits.size +
-          initialOpponent.gameBoard.misses.size,
-      ).toBe(1);
+      expect(initialOpponent.gameBoard.hits.size + initialOpponent.gameBoard.misses.size).toBe(1);
       expect(game.currentPlayer).toBe(initialOpponent);
     });
 
@@ -240,16 +234,8 @@ describe("Game", () => {
         game.switchTurn();
       }
 
-      game.currentPlayer.gameBoard.placeShip(
-        realPlayerShip,
-        [0, 0],
-        "horizontal",
-      );
-      game.opponent.gameBoard.placeShip(
-        computerPlayerShip,
-        [0, 0],
-        "horizontal",
-      );
+      game.currentPlayer.gameBoard.placeShip(realPlayerShip, [0, 0], "horizontal");
+      game.opponent.gameBoard.placeShip(computerPlayerShip, [0, 0], "horizontal");
 
       expect(game.currentPlayer).toBe(realPlayer);
       expect([true, false]).toContain(game.processTurn([0, 0]));
@@ -274,9 +260,7 @@ describe("Game", () => {
       const computerPlayer2 = new Player("computer");
       const game = new Game(realPlayer1, computerPlayer2);
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
-      ).toBe(true);
+      expect(game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal")).toBe(true);
       expect(realPlayer1.gameBoard.board[0][0]).toBeInstanceOf(Ship);
       expect(realPlayer1.gameBoard.board[0][4]).toBeInstanceOf(Ship);
       expect(game.player1UnplacedShips).not.toContain("Carrier");
@@ -288,14 +272,7 @@ describe("Game", () => {
       const computerPlayer2 = new Player("computer");
       const game = new Game(realPlayer1, computerPlayer2);
 
-      expect(
-        game.placePlayerShip(
-          computerPlayer2,
-          "Battleship",
-          [3, 6],
-          "horizontal",
-        ),
-      ).toBe(true);
+      expect(game.placePlayerShip(computerPlayer2, "Battleship", [3, 6], "horizontal")).toBe(true);
       expect(computerPlayer2.gameBoard.board[3][6]).toBeInstanceOf(Ship);
       expect(computerPlayer2.gameBoard.board[3][9]).toBeInstanceOf(Ship);
       expect(game.player2UnplacedShips).not.toContain("Battleship");
@@ -317,9 +294,7 @@ describe("Game", () => {
       const computerPlayer2 = new Player("computer");
       const game = new Game(realPlayer1, computerPlayer2);
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Invalid", [0, 0], "horizontal"),
-      ).toBe(false);
+      expect(game.placePlayerShip(realPlayer1, "Invalid", [0, 0], "horizontal")).toBe(false);
       expect(realPlayer1.gameBoard.board[0][0]).toBe(null);
       expect(game.player1UnplacedShips.length).toBe(5);
     });
@@ -329,13 +304,9 @@ describe("Game", () => {
       const computerPlayer2 = new Player("computer");
       const game = new Game(realPlayer1, computerPlayer2);
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
-      ).toBe(true);
+      expect(game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal")).toBe(true);
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
-      ).toBe(false);
+      expect(game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal")).toBe(false);
 
       expect(game.player1UnplacedShips).not.toContain("Carrier");
       expect(game.player1UnplacedShips.length).toBe(4);
@@ -347,9 +318,7 @@ describe("Game", () => {
       const computerPlayer2 = new Player("computer");
       const game = new Game(realPlayer1, computerPlayer2);
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Carrier", [9, 9], "horizontal"),
-      ).toBe(false);
+      expect(game.placePlayerShip(realPlayer1, "Carrier", [9, 9], "horizontal")).toBe(false);
       expect(game.player1UnplacedShips).toContain("Carrier");
       expect(realPlayer1.gameBoard.ships.length).toBe(0);
     });
@@ -359,12 +328,8 @@ describe("Game", () => {
       const computerPlayer2 = new Player("computer");
       const game = new Game(realPlayer1, computerPlayer2);
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal"),
-      ).toBe(true);
-      expect(
-        game.placePlayerShip(realPlayer1, "Battleship", [0, 3], "horizontal"),
-      ).toBe(false);
+      expect(game.placePlayerShip(realPlayer1, "Carrier", [0, 0], "horizontal")).toBe(true);
+      expect(game.placePlayerShip(realPlayer1, "Battleship", [0, 3], "horizontal")).toBe(false);
       expect(game.player1UnplacedShips).toContain("Battleship");
       expect(realPlayer1.gameBoard.ships.length).toBe(1);
     });
@@ -380,9 +345,7 @@ describe("Game", () => {
       game.placePlayerShip(realPlayer1, "Submarine", [3, 0], "horizontal");
       game.placePlayerShip(realPlayer1, "Destroyer", [4, 0], "horizontal");
 
-      expect(
-        game.placePlayerShip(realPlayer1, "Carrier", [5, 0], "horizontal"),
-      ).toBe(false);
+      expect(game.placePlayerShip(realPlayer1, "Carrier", [5, 0], "horizontal")).toBe(false);
       expect(game.player1UnplacedShips.length).toBe(0);
       expect(realPlayer1.gameBoard.ships.length).toBe(5);
     });

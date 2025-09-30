@@ -29,9 +29,7 @@ class Game {
     let result;
 
     if (this.currentPlayer.type === "computer") {
-      const attackInfo = this.currentPlayer.computerAttack(
-        this.opponent.gameBoard,
-      );
+      const attackInfo = this.currentPlayer.computerAttack(this.opponent.gameBoard);
       result = attackInfo.result;
       this.currentPlayer.updateComputerAttackStrategy(
         attackInfo.result,
@@ -99,10 +97,7 @@ class Game {
   }
 
   canStartGame() {
-    return (
-      this.isPlayerSetupComplete(this.player1) &&
-      this.isPlayerSetupComplete(this.player2)
-    );
+    return this.isPlayerSetupComplete(this.player1) && this.isPlayerSetupComplete(this.player2);
   }
 }
 
@@ -114,12 +109,6 @@ const SHIP_TYPES = {
   Destroyer: () => new Ship(2),
 };
 
-const OG_UNPLACED_SHIPS = [
-  "Carrier",
-  "Battleship",
-  "Cruiser",
-  "Submarine",
-  "Destroyer",
-];
+const OG_UNPLACED_SHIPS = ["Carrier", "Battleship", "Cruiser", "Submarine", "Destroyer"];
 
 export { Game };
