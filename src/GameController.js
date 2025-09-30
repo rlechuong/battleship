@@ -8,6 +8,7 @@ class GameController {
     this.shipPlacementController = shipPlacementController;
     this.player1GameBoard = null;
     this.player2GameBoard = null;
+    this.gameMode = null;
     this.phase = "setup";
     this.squareEventListenersController = null;
   }
@@ -30,6 +31,8 @@ class GameController {
 
     leftBoard.appendChild(this.player1GameBoard);
     rightBoard.appendChild(this.player2GameBoard);
+
+    this.setUpModeSelection();
 
     this.renderer.updateGameBoard(this.player1GameBoard, this.game.player1, true);
     this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
@@ -156,6 +159,43 @@ class GameController {
     this.populateRightBoardShipDropdown();
     this.clearPlacementErrors();
     this.updateGameStatusMessage();
+  }
+
+  setUpModeSelection() {
+    const PVEButton = document.querySelector("#pve-selection-button");
+    const PVPButton = document.querySelector("#pvp-selection-button");
+    const modeSelectionContainer = document.querySelector("#mode-selection-container");
+    const shipPlacementContainer = document.querySelector("#ship-placement-container");
+    const startGameButtonsContainer = document.querySelector("#start-game-buttons-container");
+    const quickStartButtonContainer = document.querySelector("#quick-start-button-container");
+
+    if (
+      !PVEButton ||
+      !PVPButton ||
+      !modeSelectionContainer ||
+      !shipPlacementContainer ||
+      !startGameButtonsContainer ||
+      !quickStartButtonContainer
+    ) {
+      console.error("Mode Selection Button or UI Container Not Found During Mode Selection Set Up");
+      return;
+    }
+
+    PVEButton.addEventListener("click", () => {
+      this.gameMode = "pve";
+      modeSelectionContainer.classList.add("hidden");
+      shipPlacementContainer.classList.remove("hidden");
+      startGameButtonsContainer.classList.remove("hidden");
+      quickStartButtonContainer.classList.remove("hidden");
+    });
+
+    PVPButton.addEventListener("click", () => {
+      this.gameMode = "pvp";
+      modeSelectionContainer.classList.add("hidden");
+      shipPlacementContainer.classList.remove("hidden");
+      startGameButtonsContainer.classList.remove("hidden");
+      quickStartButtonContainer.classList.add("hidden");
+    });
   }
 
   setUpShipPlacementButtons() {

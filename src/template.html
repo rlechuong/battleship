@@ -11,10 +11,29 @@
       <div id="game-status-header">Game Status</div>
       <div id="game-status-message"></div>
     </div>
+    <!-- Game Boards Container -->
     <div id="game-boards-container">
       <div id="left">
         <div id="left-header">Your Board</div>
         <div id="left-board"></div>
+      </div>
+      <div id="right">
+        <div id="right-header">Opponent's Board</div>
+        <div id="right-board"></div>
+      </div>
+    </div>
+
+    <!-- Mode Selection Container -->
+    <div id="mode-selection-container">
+      <div id="mode-selection-info">Please Select A Game Mode</div>
+      <button id="pve-selection-button">Player vs. Computer</button>
+      <button id="pvp-selection-button">Player vs. Player</button>
+    </div>
+
+    <!-- Ship Placement Container -->
+    <div id="ship-placement-container" class="hidden">
+      <div id="shared-ship-placement-container">
+        <!-- Draggable Placement Container -->
         <div id="draggable-placement-container">
           <div class="draggable-placement-header">Draggable Ships</div>
           <div class="draggable-placement-info">
@@ -53,6 +72,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div id="unique-ship-placement-container">
+        <!-- Left Board Ship Placement Container -->
         <div id="left-board-ship-placement-container">
           <div id="left-board-manual-placement-container">
             <label for="left-board-manual-ship-dropdown">Ship:</label>
@@ -93,10 +116,8 @@
 
           <button id="left-board-reset-placement-button">Reset Board</button>
         </div>
-      </div>
-      <div id="right">
-        <div id="right-header">Opponent's Board</div>
-        <div id="right-board"></div>
+
+        <!-- Right Board Ship Placement Container -->
         <div id="right-board-ship-placement-container">
           <div id="right-board-manual-placement-container">
             <label for="right-board-manual-ship-dropdown">Ship:</label>
@@ -139,7 +160,9 @@
         </div>
       </div>
     </div>
-    <div id="start-game-buttons-container">
+
+    <!-- Start Game Buttons Container-->
+    <div id="start-game-buttons-container" class="hidden">
       <div id="start-game-button-container">
         <button id="start-game-button">Start Game</button>
         <div id="start-game-button-explanation">
@@ -163,6 +186,5 @@
         </div>
       </div>
     </div>
-    <div id="bottom">Bottom</div>
   </body>
 </html>

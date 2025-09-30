@@ -244,3 +244,9 @@ body {
   background-color: #ffcdd2 !important;
   border-color: #f44336 !important;
 }
+
+#unique-ship-placement-container {
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+}
