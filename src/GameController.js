@@ -25,24 +25,14 @@ class GameController {
     const rightBoard = document.querySelector("#right-board");
 
     if (!leftBoard || !rightBoard) {
-      throw new Error(
-        "Critical Game Board Container Missing - Cannot Initialize",
-      );
+      throw new Error("Critical Game Board Container Missing - Cannot Initialize");
     }
 
     leftBoard.appendChild(this.player1GameBoard);
     rightBoard.appendChild(this.player2GameBoard);
 
-    this.renderer.updateGameBoard(
-      this.player1GameBoard,
-      this.game.player1,
-      true,
-    );
-    this.renderer.updateGameBoard(
-      this.player2GameBoard,
-      this.game.player2,
-      false,
-    );
+    this.renderer.updateGameBoard(this.player1GameBoard, this.game.player1, true);
+    this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
 
     this.populateLeftBoardShipDropdown();
     this.populateRightBoardShipDropdown();
@@ -87,27 +77,17 @@ class GameController {
       this.game.player2,
     );
 
-    this.renderer.updateGameBoard(
-      this.player2GameBoard,
-      this.game.player2,
-      false,
-    );
+    this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
 
-    const draggablePlacementContainer = document.querySelector(
-      "#draggable-placement-container",
-    );
+    const draggablePlacementContainer = document.querySelector("#draggable-placement-container");
     const leftBoardShipPlacementContainer = document.querySelector(
       "#left-board-ship-placement-container",
     );
     const rightBoardShipPlacementContainer = document.querySelector(
       "#right-board-ship-placement-container",
     );
-    const startGameButtonsContainer = document.querySelector(
-      "#start-game-buttons-container",
-    );
-    const playingGameButtonsContainer = document.querySelector(
-      "#playing-game-buttons-container",
-    );
+    const startGameButtonsContainer = document.querySelector("#start-game-buttons-container");
+    const playingGameButtonsContainer = document.querySelector("#playing-game-buttons-container");
 
     if (
       !draggablePlacementContainer ||
@@ -141,21 +121,15 @@ class GameController {
     this.game.gameState = "running";
     this.game.winner = null;
 
-    const draggablePlacementContainer = document.querySelector(
-      "#draggable-placement-container",
-    );
+    const draggablePlacementContainer = document.querySelector("#draggable-placement-container");
     const leftBoardShipPlacementContainer = document.querySelector(
       "#left-board-ship-placement-container",
     );
     const rightBoardShipPlacementContainer = document.querySelector(
       "#right-board-ship-placement-container",
     );
-    const startGameButtonsContainer = document.querySelector(
-      "#start-game-buttons-container",
-    );
-    const playingGameButtonsContainer = document.querySelector(
-      "#playing-game-buttons-container",
-    );
+    const startGameButtonsContainer = document.querySelector("#start-game-buttons-container");
+    const playingGameButtonsContainer = document.querySelector("#playing-game-buttons-container");
 
     if (
       !draggablePlacementContainer ||
@@ -174,17 +148,9 @@ class GameController {
     startGameButtonsContainer.classList.remove("hidden");
     playingGameButtonsContainer.classList.add("hidden");
 
-    this.renderer.updateGameBoard(
-      this.player1GameBoard,
-      this.game.player1,
-      true,
-    );
+    this.renderer.updateGameBoard(this.player1GameBoard, this.game.player1, true);
 
-    this.renderer.updateGameBoard(
-      this.player2GameBoard,
-      this.game.player2,
-      false,
-    );
+    this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
 
     this.populateLeftBoardShipDropdown();
     this.populateRightBoardShipDropdown();
@@ -200,11 +166,7 @@ class GameController {
       this.shipPlacementController.resetPlayerShips(this.game.player1);
       this.shipPlacementController.randomlyPlaceShips(this.game.player1);
       this.populateLeftBoardShipDropdown();
-      this.renderer.updateGameBoard(
-        this.player1GameBoard,
-        this.game.player1,
-        true,
-      );
+      this.renderer.updateGameBoard(this.player1GameBoard, this.game.player1, true);
       this.clearPlacementErrors();
     });
 
@@ -214,11 +176,7 @@ class GameController {
     leftBoardResetPlacementButton.addEventListener("click", () => {
       this.shipPlacementController.resetPlayerShips(this.game.player1);
       this.populateLeftBoardShipDropdown();
-      this.renderer.updateGameBoard(
-        this.player1GameBoard,
-        this.game.player1,
-        true,
-      );
+      this.renderer.updateGameBoard(this.player1GameBoard, this.game.player1, true);
       this.clearPlacementErrors();
     });
 
@@ -229,11 +187,7 @@ class GameController {
       this.shipPlacementController.resetPlayerShips(this.game.player2);
       this.shipPlacementController.randomlyPlaceShips(this.game.player2);
       this.populateRightBoardShipDropdown();
-      this.renderer.updateGameBoard(
-        this.player2GameBoard,
-        this.game.player2,
-        true,
-      );
+      this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, true);
       this.clearPlacementErrors();
     });
 
@@ -243,11 +197,7 @@ class GameController {
     rightBoardResetPlacementButton.addEventListener("click", () => {
       this.shipPlacementController.resetPlayerShips(this.game.player2);
       this.populateRightBoardShipDropdown();
-      this.renderer.updateGameBoard(
-        this.player2GameBoard,
-        this.game.player2,
-        true,
-      );
+      this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, true);
       this.clearPlacementErrors();
     });
 
@@ -258,9 +208,7 @@ class GameController {
   setUpStartGameButtons() {
     const startGameButton = document.querySelector("#start-game-button");
     const quickStartButton = document.querySelector("#quick-start-button");
-    const startGameButtonsError = document.querySelector(
-      "#start-game-buttons-error",
-    );
+    const startGameButtonsError = document.querySelector("#start-game-buttons-error");
 
     if (!startGameButton || !quickStartButton || !startGameButtonsError) {
       console.error("Start Game Button Or Error Element Not Found.");
@@ -272,8 +220,7 @@ class GameController {
         startGameButtonsError.textContent = "";
         this.startPlayingPhase();
       } else {
-        startGameButtonsError.textContent =
-          "Please place all ships on both boards.";
+        startGameButtonsError.textContent = "Please place all ships on both boards.";
         return;
       }
     });
@@ -287,8 +234,7 @@ class GameController {
           this.startPlayingPhase();
         }
       } else {
-        startGameButtonsError.textContent =
-          "Please place all ships on your board.";
+        startGameButtonsError.textContent = "Please place all ships on your board.";
         return;
       }
     });
@@ -315,22 +261,12 @@ class GameController {
   handleManualPlacementButton(isLeftBoard) {
     const boardSide = isLeftBoard ? "left" : "right";
     const player = isLeftBoard ? this.game.player1 : this.game.player2;
-    const gameBoard = isLeftBoard
-      ? this.player1GameBoard
-      : this.player2GameBoard;
+    const gameBoard = isLeftBoard ? this.player1GameBoard : this.player2GameBoard;
 
-    const dropdown = document.querySelector(
-      `#${boardSide}-board-manual-ship-dropdown`,
-    );
-    const coordinatesInput = document.querySelector(
-      `#${boardSide}-board-manual-coordinates-input`,
-    );
-    const button = document.querySelector(
-      `#${boardSide}-board-manual-placement-button`,
-    );
-    const errorElement = document.querySelector(
-      `#${boardSide}-board-manual-placement-error`,
-    );
+    const dropdown = document.querySelector(`#${boardSide}-board-manual-ship-dropdown`);
+    const coordinatesInput = document.querySelector(`#${boardSide}-board-manual-coordinates-input`);
+    const button = document.querySelector(`#${boardSide}-board-manual-placement-button`);
+    const errorElement = document.querySelector(`#${boardSide}-board-manual-placement-error`);
 
     if (!dropdown || !coordinatesInput || !button || !errorElement) {
       console.error(`Manual Placement Element Missing For ${boardSide} Board.`);
@@ -357,12 +293,7 @@ class GameController {
       const ship = dropdown.value;
       const direction = directionInput.value;
 
-      const success = this.game.placePlayerShip(
-        player,
-        ship,
-        coordinates,
-        direction,
-      );
+      const success = this.game.placePlayerShip(player, ship, coordinates, direction);
 
       if (success) {
         this.renderer.updateGameBoard(gameBoard, player, true);
@@ -456,12 +387,10 @@ class GameController {
     if (this.phase === "setup" && this.game.gameState === "running") {
       gameStatusMessage.textContent = "Please Place Ships.";
     } else if (this.game.gameState === "ended") {
-      const winnerType =
-        this.game.winner.type === "real" ? "You" : "The Computer";
+      const winnerType = this.game.winner.type === "real" ? "You" : "The Computer";
       gameStatusMessage.textContent = `Game Over! ${winnerType} Won`;
     } else {
-      const currentPlayerType =
-        this.game.currentPlayer.type === "real" ? "Your" : "Computer's";
+      const currentPlayerType = this.game.currentPlayer.type === "real" ? "Your" : "Computer's";
       gameStatusMessage.textContent = `It Is ${currentPlayerType} Turn`;
     }
   }
@@ -476,17 +405,11 @@ class GameController {
     const boardSide = isLeftBoard ? "left" : "right";
     const player = isLeftBoard ? this.game.player1 : this.game.player2;
 
-    const dropdown = document.querySelector(
-      `#${boardSide}-board-manual-ship-dropdown`,
-    );
-    const button = document.querySelector(
-      `#${boardSide}-board-manual-placement-button`,
-    );
+    const dropdown = document.querySelector(`#${boardSide}-board-manual-ship-dropdown`);
+    const button = document.querySelector(`#${boardSide}-board-manual-placement-button`);
 
     if (!dropdown || !button) {
-      console.error(
-        `Required DOM Elements Not Found For ${boardSide} Board Dropdown`,
-      );
+      console.error(`Required DOM Elements Not Found For ${boardSide} Board Dropdown`);
       return;
     }
 
