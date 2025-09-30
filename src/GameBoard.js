@@ -1,9 +1,16 @@
 class GameBoard {
+  static BOARD_SIZE = 10;
+  static MAX_COORDINATE = 9;
+
   constructor() {
+    this.initializeBoard();
+  }
+
+  initializeBoard() {
     this.board = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < GameBoard.BOARD_SIZE; i++) {
       this.board[i] = [];
-      for (let j = 0; j < 10; j++) {
+      for (let j = 0; j < GameBoard.BOARD_SIZE; j++) {
         this.board[i][j] = null;
       }
     }
@@ -14,32 +21,29 @@ class GameBoard {
   }
 
   resetGameBoard() {
-    this.board = [];
-    for (let i = 0; i < 10; i++) {
-      this.board[i] = [];
-      for (let j = 0; j < 10; j++) {
-        this.board[i][j] = null;
-      }
-    }
-
-    this.misses = new Set();
-    this.hits = new Set();
-    this.ships = [];
+    this.initializeBoard();
   }
 
+  /**
+   * Attempts to place a ship on the board at specified coordinates and direction
+   * @param {Ship} ship - The ship object to place
+   * @param {number[]} coordinates - Starting coordinates [row, column]
+   * @param {string} direction - Direction to place ship ("horizontal" or "vertical")
+   * @returns {boolean} True if placement succeeds, false if placement fails
+   */
   placeShip(ship, coordinates, direction) {
     const row = coordinates[0];
     const column = coordinates[1];
 
-    if (row > 9 || column > 9) {
+    if (row > GameBoard.MAX_COORDINATE || column > GameBoard.MAX_COORDINATE) {
       return false;
     }
 
-    if (direction === "horizontal" && column + ship.length > 10) {
+    if (direction === "horizontal" && column + ship.length > GameBoard.BOARD_SIZE) {
       return false;
     }
 
-    if (direction === "vertical" && row + ship.length > 10) {
+    if (direction === "vertical" && row + ship.length > GameBoard.BOARD_SIZE) {
       return false;
     }
 
@@ -67,9 +71,42 @@ class GameBoard {
     return true;
   }
 
+  getShipAt(coordinates) {
+    const row = coordinates[0];
+    const column = coordinates[1];
+
+    if (
+      row < 0 ||
+      row > GameBoard.MAX_COORDINATE ||
+      column < 0 ||
+      column > GameBoard.MAX_COORDINATE
+    ) {
+      console.error(`Invalid coordinates: [${row}, ${column}]`);
+      return null;
+    }
+
+    return this.board[row][column];
+  }
+
+  /**
+   * Processes an attack at the specified coordinates and determines the outcome
+   * @param {number[]} coordinates - Attack coordinates [row, column]
+   * @returns {boolean|string} True for hit, false for miss, "already-attacked" if square was
+   * previously attacked, "invalid-coordinates" if out of bounds
+   */
   receiveAttack(coordinates) {
     const row = coordinates[0];
     const column = coordinates[1];
+
+    if (
+      row < 0 ||
+      row > GameBoard.MAX_COORDINATE ||
+      column < 0 ||
+      column > GameBoard.MAX_COORDINATE
+    ) {
+      console.error(`Invalid coordinates: [${row}, ${column}]`);
+      return "invalid-coordinates";
+    }
 
     const stringCoordinate = `${row},${column}`;
     if (this.hits.has(stringCoordinate) || this.misses.has(stringCoordinate)) {
@@ -86,12 +123,10 @@ class GameBoard {
     }
   }
 
-  getShipAt(coordinates) {
-    const row = coordinates[0];
-    const column = coordinates[1];
-    return this.board[row][column];
-  }
-
+  /**
+   * Determines whether all ships on the board have sunk
+   * @returns {boolean} True if all ships sunk, false if any ship remains
+   */
   allShipsSunk() {
     if (this.ships.length === 0) {
       return false;

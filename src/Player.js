@@ -1,6 +1,10 @@
 import { GameBoard } from "./GameBoard.js";
 
 class Player {
+  static BOARD_SIZE = 10;
+  static MAX_COORDINATE = 9;
+  static TOTAL_SQUARES = 100;
+
   constructor(type) {
     this.type = type;
     this.gameBoard = new GameBoard();
@@ -10,8 +14,16 @@ class Player {
     this.computerCurrentTargetHits = [];
   }
 
+  /**
+   * Generates and executes a computer attack on the opponent's board
+   * @param {GameBoard} opponentBoard - The opponent's game board to attack
+   * @returns {Object} Attack result containing result and coordinates
+   * @property {boolean|string} result - True for hit, false for miss, "already-attacked" if
+   * previously attacked, "invalid-coordinates" if out of bounds
+   * @property {number[]} coordinates - Attack coordinates [row, column]
+   */
   computerAttack(opponentBoard) {
-    if (opponentBoard.misses.size + opponentBoard.hits.size === 100) {
+    if (opponentBoard.misses.size + opponentBoard.hits.size === Player.TOTAL_SQUARES) {
       throw new Error("Cannot Attack: All Squares Attacked. Game Should Have Ended.");
     }
 
@@ -36,8 +48,8 @@ class Player {
     let coordinates = [];
 
     do {
-      const randomRow = Math.floor(Math.random() * 10);
-      const randomColumn = Math.floor(Math.random() * 10);
+      const randomRow = Math.floor(Math.random() * Player.BOARD_SIZE);
+      const randomColumn = Math.floor(Math.random() * Player.BOARD_SIZE);
 
       result = opponentBoard.receiveAttack([randomRow, randomColumn]);
       coordinates = [randomRow, randomColumn];
@@ -46,6 +58,13 @@ class Player {
     return { result: result, coordinates: coordinates };
   }
 
+  /**
+   * Updates the computer's attack strategy based on the result of the previous attack
+   * @param {boolean} result - Attack result (true for hit, false for miss)
+   * @param {number[]} coordinates - Coordinates [row, column] of the attack
+   * @param {GameBoard} opponentBoard - The opponent's game board
+   * @returns {void}
+   */
   updateComputerAttackStrategy(result, coordinates, opponentBoard) {
     if (result === true) {
       this.computerCurrentTargetHits.push(coordinates);
@@ -75,7 +94,7 @@ class Player {
           if (minColumn - 1 >= 0) {
             this.computerAttackQueue.push([row, minColumn - 1]);
           }
-          if (maxColumn + 1 <= 9) {
+          if (maxColumn + 1 <= Player.MAX_COORDINATE) {
             this.computerAttackQueue.push([row, maxColumn + 1]);
           }
         } else if (this.computerLockedDirection === "vertical") {
@@ -90,7 +109,7 @@ class Player {
           if (minRow - 1 >= 0) {
             this.computerAttackQueue.push([minRow - 1, column]);
           }
-          if (maxRow + 1 <= 9) {
+          if (maxRow + 1 <= Player.MAX_COORDINATE) {
             this.computerAttackQueue.push([maxRow + 1, column]);
           }
         }
@@ -121,7 +140,7 @@ class Player {
           if (minColumn - 1 >= 0) {
             this.computerAttackQueue.push([row, minColumn - 1]);
           }
-          if (maxColumn + 1 <= 9) {
+          if (maxColumn + 1 <= Player.MAX_COORDINATE) {
             this.computerAttackQueue.push([row, maxColumn + 1]);
           }
         } else if (
@@ -142,7 +161,7 @@ class Player {
           if (minRow - 1 >= 0) {
             this.computerAttackQueue.push([minRow - 1, column]);
           }
-          if (maxRow + 1 <= 9) {
+          if (maxRow + 1 <= Player.MAX_COORDINATE) {
             this.computerAttackQueue.push([maxRow + 1, column]);
           }
         }
@@ -155,13 +174,13 @@ class Player {
         if (attackedRow - 1 >= 0) {
           this.computerAttackQueue.push([attackedRow - 1, attackedColumn]);
         }
-        if (attackedRow + 1 <= 9) {
+        if (attackedRow + 1 <= Player.MAX_COORDINATE) {
           this.computerAttackQueue.push([attackedRow + 1, attackedColumn]);
         }
         if (attackedColumn - 1 >= 0) {
           this.computerAttackQueue.push([attackedRow, attackedColumn - 1]);
         }
-        if (attackedColumn + 1 <= 9) {
+        if (attackedColumn + 1 <= Player.MAX_COORDINATE) {
           this.computerAttackQueue.push([attackedRow, attackedColumn + 1]);
         }
       }

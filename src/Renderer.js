@@ -1,14 +1,20 @@
 import { Ship } from "./Ship.js";
 
 class Renderer {
+  static BOARD_SIZE = 10;
+
   constructor() {}
 
+  /**
+   * Creates the visual representation of a game board
+   * @returns {HTMLElement} The game board DOM element with 100 squares
+   */
   createGameBoard() {
     const gameBoard = document.createElement("div");
     gameBoard.classList.add("game-board");
 
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < Renderer.BOARD_SIZE; i++) {
+      for (let j = 0; j < Renderer.BOARD_SIZE; j++) {
         const gameBoardSquare = document.createElement("div");
         gameBoardSquare.classList.add("game-board-square");
         gameBoardSquare.dataset.row = i;
@@ -20,12 +26,29 @@ class Renderer {
     return gameBoard;
   }
 
+  /**
+   * Updates the visual representation of the game board based on current game state
+   * @param {HTMLElement} gameBoard - The game board DOM element to update
+   * @param {Player} player - The player whose game board to update
+   * @param {boolean} isPlayerBoard - If true, shows ships; If false, hides non-hit ships
+   * @returns {void}
+   */
   updateGameBoard(gameBoard, player, isPlayerBoard = true) {
+    if (!gameBoard) {
+      console.error("Game board element not found for update");
+      return;
+    }
+
     const squares = gameBoard.querySelectorAll(".game-board-square");
 
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        const squareIndex = i * 10 + j;
+    if (squares.length === 0) {
+      console.error("No squares found on game board for update");
+      return;
+    }
+
+    for (let i = 0; i < Renderer.BOARD_SIZE; i++) {
+      for (let j = 0; j < Renderer.BOARD_SIZE; j++) {
+        const squareIndex = i * Renderer.BOARD_SIZE + j;
         const targetSquare = squares[squareIndex];
         const playerBoardValue = player.gameBoard.board[i][j];
 
@@ -50,8 +73,6 @@ class Renderer {
         }
       }
     }
-
-    return squares[0];
   }
 
   updatePlayerGameBoard(gameBoard, player) {
