@@ -1,16 +1,20 @@
+import { Game } from "./Game.js";
+import { Player } from "./Player.js";
+import { ShipPlacementController } from "./ShipPlacementController.js";
+
 class GameController {
   static COMPUTER_TURN_DELAY_MS = 1000;
   static ASCII_OFFSET_A = 65;
 
-  constructor(game, renderer, shipPlacementController) {
-    this.game = game;
+  constructor(renderer) {
     this.renderer = renderer;
-    this.shipPlacementController = shipPlacementController;
+    this.game = null;
+    this.shipPlacementController = null;
     this.player1GameBoard = null;
     this.player2GameBoard = null;
-    this.gameMode = null;
     this.phase = "setup";
     this.squareEventListenersController = null;
+    this.gameMode = null;
   }
 
   /**
@@ -33,7 +37,9 @@ class GameController {
     rightBoard.appendChild(this.player2GameBoard);
 
     this.setUpModeSelection();
+  }
 
+  initializeGameLogic() {
     this.renderer.updateGameBoard(this.player1GameBoard, this.game.player1, true);
     this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
 
@@ -68,6 +74,15 @@ class GameController {
     this.setUpStartGameButtons();
     this.setUpPlayingGameButtons();
     this.updateGameStatusMessage();
+  }
+
+  createGameWithMode(mode) {
+    this.gameMode = mode;
+    const player1 = new Player("real");
+    const player2 = new Player(mode === "pve" ? "computer" : "real");
+    this.game = new Game(player1, player2);
+    this.shipPlacementController = new ShipPlacementController(this.game, this.renderer);
+    this.initializeGameLogic();
   }
 
   startPlayingPhase() {
@@ -182,7 +197,7 @@ class GameController {
     }
 
     PVEButton.addEventListener("click", () => {
-      this.gameMode = "pve";
+      this.createGameWithMode("pve");
       modeSelectionContainer.classList.add("hidden");
       shipPlacementContainer.classList.remove("hidden");
       startGameButtonsContainer.classList.remove("hidden");
@@ -190,7 +205,7 @@ class GameController {
     });
 
     PVPButton.addEventListener("click", () => {
-      this.gameMode = "pvp";
+      this.createGameWithMode("pvp");
       modeSelectionContainer.classList.add("hidden");
       shipPlacementContainer.classList.remove("hidden");
       startGameButtonsContainer.classList.remove("hidden");
