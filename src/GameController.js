@@ -3,6 +3,7 @@ import { Player } from "./Player.js";
 import { ShipPlacementController } from "./ShipPlacementController.js";
 
 class GameController {
+  static PLAYER_TURN_DELAY_MS = 3000;
   static COMPUTER_TURN_DELAY_MS = 1000;
   static ASCII_OFFSET_A = 65;
 
@@ -73,6 +74,7 @@ class GameController {
 
     this.setUpStartGameButtons();
     this.setUpPlayingGameButtons();
+    this.setUpPassDeviceButton();
     this.updateGameStatusMessage();
   }
 
@@ -88,12 +90,21 @@ class GameController {
   startPlayingPhase() {
     this.phase = "playing";
 
-    this.addSquareEventListeners(
-      this.player1GameBoard,
-      this.game.player1,
-      this.player2GameBoard,
-      this.game.player2,
-    );
+    if (this.gameMode === "pve") {
+      this.addSquareEventListeners(
+        this.player1GameBoard,
+        this.game.player1,
+        this.player2GameBoard,
+        this.game.player2,
+      );
+    } else if (this.gameMode === "pvp") {
+      this.addSquareEventListenersForPvP(
+        this.player1GameBoard,
+        this.game.player1,
+        this.player2GameBoard,
+        this.game.player2,
+      );
+    }
 
     this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
 
@@ -401,7 +412,7 @@ class GameController {
           if (result === "already-attacked") {
             return;
           } else {
-            this.renderer.updateOpponentBoard(opponentBoard, opponent);
+            this.renderer.updateOpponentGameBoard(opponentBoard, opponent);
             this.updateGameStatusMessage();
             setTimeout(() => {
               this.handleComputerTurn(playerBoard, player);
@@ -412,6 +423,98 @@ class GameController {
         { signal: this.squareEventListenersController.signal },
       );
     });
+  }
+
+  addSquareEventListenersForPvP(player1Board, player1, player2Board, player2) {
+    this.squareEventListenersController = new AbortController();
+    const squares = document.querySelectorAll(".game-board-square");
+
+    squares.forEach((square) => {
+      square.addEventListener(
+        "click",
+        () => {
+          if (this.game.gameState === "ended") {
+            return;
+          }
+
+          const isLeftBoard = square.closest("#left-board") !== null;
+          const isRightBoard = square.closest("#right-board") !== null;
+
+          if (this.game.currentPlayer === player1 && isLeftBoard) {
+            return;
+          }
+          if (this.game.currentPlayer === player2 && isRightBoard) {
+            return;
+          }
+
+          const row = parseInt(square.dataset.row);
+          const column = parseInt(square.dataset.column);
+          const coordinates = [row, column];
+
+          const result = this.game.processTurn(coordinates);
+
+          if (result === "already-attacked") {
+            return;
+          } else {
+            this.updateGameStatusMessage();
+            setTimeout(() => {
+              this.showPassDeviceScreen();
+            }, GameController.PLAYER_TURN_DELAY_MS);
+          }
+        },
+        { signal: this.squareEventListenersController.signal },
+      );
+    });
+  }
+
+  setUpPassDeviceButton() {
+    const passDeviceContinueButton = document.querySelector("#pass-device-continue-button");
+
+    if (!passDeviceContinueButton) {
+      console.error("Pass Device Continue Button Not Found.");
+      return;
+    }
+
+    passDeviceContinueButton.addEventListener("click", () => {
+      if (this.game.currentPlayer === this.game.player1) {
+        this.renderer.updatePlayerGameBoard(this.player1GameBoard, this.game.player1);
+        this.renderer.updateOpponentGameBoard(this.player2GameBoard, this.game.player2);
+      } else if (this.game.currentPlayer === this.game.player2) {
+        this.renderer.updatePlayerGameBoard(this.player2GameBoard, this.game.player2);
+        this.renderer.updateOpponentGameBoard(this.player1GameBoard, this.game.player1);
+      }
+
+      this.hideDeviceScreen();
+    });
+  }
+
+  showPassDeviceScreen() {
+    const passDeviceScreen = document.querySelector("#pass-device-screen");
+    const passDeviceMessage = document.querySelector("#pass-device-message");
+
+    if (!passDeviceScreen || !passDeviceMessage) {
+      console.error("Pass Device Screen Element Not Found");
+      return;
+    }
+
+    if (this.game.currentPlayer === this.game.player1) {
+      passDeviceMessage.textContent = "It Is Player 1's Turn. Please Continue When Ready.";
+    } else if (this.game.currentPlayer === this.game.player2) {
+      passDeviceMessage.textContent = "It Is Player 2's Turn. Please Continue When Ready.";
+    }
+
+    passDeviceScreen.classList.remove("hidden");
+  }
+
+  hideDeviceScreen() {
+    const passDeviceScreen = document.querySelector("#pass-device-screen");
+
+    if (!passDeviceScreen) {
+      console.error("Pass Device Screen Element Not Found");
+      return;
+    }
+
+    passDeviceScreen.classList.add("hidden");
   }
 
   removeSquareEventListeners() {
@@ -442,11 +545,21 @@ class GameController {
     if (this.phase === "setup" && this.game.gameState === "running") {
       gameStatusMessage.textContent = "Please Place Ships.";
     } else if (this.game.gameState === "ended") {
-      const winnerType = this.game.winner.type === "real" ? "You" : "The Computer";
-      gameStatusMessage.textContent = `Game Over! ${winnerType} Won`;
+      if (this.gameMode === "pvp") {
+        const winnerNumber = this.game.winner === this.game.player1 ? "1" : "2";
+        gameStatusMessage.textContent = `Game Over! Player ${winnerNumber} Won`;
+      } else {
+        const winnerType = this.game.winner.type === "real" ? "You" : "The Computer";
+        gameStatusMessage.textContent = `Game Over! ${winnerType} Won`;
+      }
     } else {
-      const currentPlayerType = this.game.currentPlayer.type === "real" ? "Your" : "Computer's";
-      gameStatusMessage.textContent = `It Is ${currentPlayerType} Turn`;
+      if (this.gameMode === "pvp") {
+        const currentPlayerNumber = this.game.currentPlayer === this.game.player1 ? "1" : "2";
+        gameStatusMessage.textContent = `It Is Player ${currentPlayerNumber}'s Turn`;
+      } else {
+        const currentPlayerType = this.game.currentPlayer.type === "real" ? "Your" : "Computer's";
+        gameStatusMessage.textContent = `It Is ${currentPlayerType} Turn`;
+      }
     }
   }
 

@@ -79,7 +79,7 @@ class Renderer {
     this.updateGameBoard(gameBoard, player, true);
   }
 
-  updateOpponentBoard(gameBoard, player) {
+  updateOpponentGameBoard(gameBoard, player) {
     this.updateGameBoard(gameBoard, player, false);
   }
 
