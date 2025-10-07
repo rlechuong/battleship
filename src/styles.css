@@ -82,6 +82,7 @@ body {
   gap: 1rem;
   background-color: #121212;
   font-family: Arial, Helvetica, "Nimbus Sans L", "Liberation Sans", sans-serif;
+  min-width: 1600px;
 }
 
 #header {
@@ -161,7 +162,7 @@ body {
 #playing-section {
   display: flex;
   flex-direction: row;
-  gap: 100px;
+  gap: 5rem;
 }
 
 /* Ship Placement Container */
@@ -174,6 +175,7 @@ body {
   padding: 1rem;
   gap: 1rem;
   background: rgb(36, 36, 36);
+  height: 100%;
 }
 
 #ship-placement-container.hidden {
@@ -390,7 +392,6 @@ details > summary {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-
   margin-top: 0.5rem;
   color: rgba(255, 255, 255, 0.6);
 }
@@ -444,6 +445,15 @@ details > summary {
 
 /* Game Board Container */
 
+#playing-section-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+}
+
 #game-boards-container {
   display: flex;
   flex-direction: row;
@@ -455,6 +465,7 @@ details > summary {
   font-size: 1rem;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.87);
+  text-align: center;
 }
 
 .game-board {
@@ -514,9 +525,74 @@ details > summary {
   pointer-events: none;
 }
 
-#start-game-buttons-error {
-  color: darkred;
+/* Start Game Buttons Container */
+
+#start-game-buttons-container,
+#playing-game-buttons-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
+
+#start-game-buttons-container.hidden,
+#playing-game-buttons-container.hidden {
+  display: none;
+}
+
+#start-game-button-container,
+#quick-start-button-container,
+#start-new-game-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgb(36, 36, 36);
+  padding: 0.5rem;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+#quick-start-button-container.hidden {
+  display: none;
+}
+
+#start-game-button,
+#quick-start-button,
+#start-new-game-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  background-color: #03dac6;
+  font-weight: bold;
+  height: 2rem;
+}
+
+#start-game-button:hover,
+#quick-start-button:hover,
+#start-new-game-button:hover {
+  opacity: 0.9;
+}
+
+#start-game-buttons-error {
+  color: #cf6679;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+#start-new-game-from-mode-selection-explanation {
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.38);
+  text-align: center;
+}
+
+/* Pass Device Screen */
 
 #pass-device-screen {
   display: flex;
@@ -524,8 +600,7 @@ details > summary {
   justify-content: center;
   align-items: center;
   position: fixed;
-  top: 0;
-  left: 0;
+  gap: 2rem;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0);
@@ -533,27 +608,25 @@ details > summary {
 }
 
 #pass-device-message {
-  color: white;
-  font-size: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.87);
 }
 
 #pass-device-continue-button {
-  font-size: 1.5rem;
-  padding: 1rem 2rem;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
   cursor: pointer;
+  background-color: #bb86fc;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+#pass-device-continue-button:hover {
+  opacity: 0.9;
 }
 
 #pass-device-screen.hidden {
-  display: none;
-}
-
-#start-game-buttons-container {
-  display: flex;
-  flex-direction: column;
-}
-
-#start-game-buttons-container.hidden {
   display: none;
 }

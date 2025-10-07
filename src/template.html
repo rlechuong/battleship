@@ -166,15 +166,46 @@
         </details>
       </div>
 
-      <!-- Game Boards Container -->
-      <div id="game-boards-container">
-        <div id="left">
-          <div id="left-header">Player 1 Board</div>
-          <div id="left-board"></div>
+      <div id="playing-section-right">
+        <!-- Game Boards Container -->
+        <div id="game-boards-container">
+          <div id="left">
+            <div id="left-header">Player 1 Board</div>
+            <div id="left-board"></div>
+          </div>
+          <div id="right">
+            <div id="right-header">Player 2 (Or Computer) Board</div>
+            <div id="right-board"></div>
+          </div>
         </div>
-        <div id="right">
-          <div id="right-header">Player 2 (Or Computer) Board</div>
-          <div id="right-board"></div>
+
+        <!-- Start Game Buttons Container-->
+        <div id="start-game-buttons-container" class="hidden">
+          <div id="start-game-button-container">
+            <button id="start-game-button">Start Game</button>
+            <div id="start-game-button-explanation">
+              Place ships on both boards before beginning.
+            </div>
+          </div>
+          <div id="quick-start-button-container">
+            <button id="quick-start-button">Quick Start vs Computer</button>
+            <div id="quick-start-button-explanation">
+              Place ships on your board and the computer's board will be randomized.
+            </div>
+          </div>
+          <div id="start-game-buttons-error"></div>
+        </div>
+
+        <div id="playing-game-buttons-container" class="hidden">
+          <div id="start-new-game-button-container">
+            <button id="start-new-game-button">Start New Game</button>
+            <div id="start-new-game-button-explanation">
+              Starts a fresh game from the setup phase.
+            </div>
+          </div>
+          <div id="start-new-game-from-mode-selection-explanation">
+            * To start from mode selection, please refresh the page.
+          </div>
         </div>
       </div>
     </div>
@@ -183,32 +214,6 @@
     <div id="pass-device-screen" class="hidden">
       <div id="pass-device-message"></div>
       <button id="pass-device-continue-button">Continue</button>
-    </div>
-
-    <!-- Start Game Buttons Container-->
-    <div id="start-game-buttons-container" class="hidden">
-      <div id="start-game-button-container">
-        <button id="start-game-button">Start Game</button>
-        <div id="start-game-button-explanation">
-          Place ships on both boards then begin the game.
-        </div>
-      </div>
-      <div id="quick-start-button-container">
-        <button id="quick-start-button">Quick Start vs Computer</button>
-        <div id="quick-start-button-explanation">
-          Place ships on your board and the opponent's board will be randomized.
-        </div>
-      </div>
-      <div id="start-game-buttons-error"></div>
-    </div>
-
-    <div id="playing-game-buttons-container" class="hidden">
-      <div id="start-new-game-button-container">
-        <button id="start-new-game-button">Start New Game</button>
-        <div id="start-new-game-button-explanation">
-          Starts a fresh game from the beginning of the setup phase.
-        </div>
-      </div>
     </div>
   </body>
 </html>
