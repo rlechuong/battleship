@@ -6,46 +6,33 @@
     <title>Battleship</title>
   </head>
   <body>
-    <div id="header">BattleShip</div>
+    <div id="header">Battleship</div>
+
+    <!-- Mode Selection Hero Section -->
+    <div id="mode-selection-container">
+      <div id="mode-selection-title">Choose Your Game Mode</div>
+      <div id="mode-selection-buttons">
+        <button id="pve-selection-button">Player vs. Computer</button>
+        <button id="pvp-selection-button">Player vs. Player</button>
+      </div>
+    </div>
+
+    <!-- Game Status Container -->
     <div id="game-status-container">
-      <div id="game-status-header">Game Status</div>
+      <div id="game-status-header">Game Status:</div>
       <div id="game-status-message"></div>
     </div>
-    <!-- Game Boards Container -->
-    <div id="game-boards-container">
-      <div id="left">
-        <div id="left-header">Your Board</div>
-        <div id="left-board"></div>
-      </div>
-      <div id="right">
-        <div id="right-header">Opponent's Board</div>
-        <div id="right-board"></div>
-      </div>
-    </div>
 
-    <!-- Pass Device Screen -->
-    <div id="pass-device-screen" class="hidden">
-      <div id="pass-device-message"></div>
-      <button id="pass-device-continue-button">Continue</button>
-    </div>
+    <div id="playing-section">
+      <!-- Ship Placement Container -->
+      <div id="ship-placement-container" class="hidden">
+        <div id="ship-placement-header">Drag Ships Onto Board Or Use Random Placement</div>
 
-    <!-- Mode Selection Container -->
-    <div id="mode-selection-container">
-      <div id="mode-selection-info">Please Select A Game Mode</div>
-      <button id="pve-selection-button">Player vs. Computer</button>
-      <button id="pvp-selection-button">Player vs. Player</button>
-    </div>
-
-    <!-- Ship Placement Container -->
-    <div id="ship-placement-container" class="hidden">
-      <div id="shared-ship-placement-container">
-        <!-- Draggable Placement Container -->
-        <div id="draggable-placement-container">
-          <div class="draggable-placement-header">Draggable Ships</div>
-          <div class="draggable-placement-info">
-            Right click a ship to change its direction before dragging!
-          </div>
-          <div class="draggable-ships-container">
+        <!-- Draggable Ships (Shared By Boards) -->
+        <div id="draggable-ships-section">
+          <div id="draggable-ships-section-header">Draggable Ships</div>
+          <div id="draggable-ships-section-text">Right Click To Rotate Before Dragging</div>
+          <div id="draggable-ships-container">
             <!-- Carrier -->
             <div class="draggable-ship" data-ship-type="Carrier" data-length="5" draggable="true">
               <div class="draggable-ship-name">Carrier (5)</div>
@@ -78,93 +65,124 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="unique-ship-placement-container">
-        <!-- Left Board Ship Placement Container -->
-        <div id="left-board-ship-placement-container">
-          <div id="left-board-manual-placement-container">
-            <label for="left-board-manual-ship-dropdown">Ship:</label>
-            <select
-              id="left-board-manual-ship-dropdown"
-              name="left-board-manual-ship-dropdown"
-            ></select>
-            <label for="left-board-manual-coordinates-input">Coordinates:</label>
-            <input
-              type="text"
-              id="left-board-manual-coordinates-input"
-              name="left-board-manual-coordinates-input"
-              placeholder="A1"
-            />
-            <fieldset>
-              <legend>Ship Direction</legend>
-              <label for="left-board-horizontal">Horizontal</label>
-              <input
-                type="radio"
-                id="left-board-horizontal"
-                name="left-board-manual-direction-input"
-                value="horizontal"
-                checked
-              />
-              <label for="left-board-vertical">Vertical</label>
-              <input
-                type="radio"
-                id="left-board-vertical"
-                name="left-board-manual-direction-input"
-                value="vertical"
-              />
-            </fieldset>
-            <button id="left-board-manual-placement-button">Place Ship</button>
-            <div id="left-board-manual-placement-error"></div>
+        <!-- Board Controls -->
+        <div id="board-controls-container">
+          <div class="board-control">
+            <div class="board-control-title">Player 1 Board - Left</div>
+            <div class="board-control-buttons">
+              <button id="left-board-random-placement-button">Random Placement</button>
+              <button id="left-board-reset-placement-button">Reset Board</button>
+            </div>
           </div>
 
-          <button id="left-board-random-placement-button">Randomly Place</button>
-
-          <button id="left-board-reset-placement-button">Reset Board</button>
+          <div class="board-control">
+            <div class="board-control-title">Player 2 (Or Computer) Board - Right</div>
+            <div class="board-control-buttons">
+              <button id="right-board-random-placement-button">Random Placement</button>
+              <button id="right-board-reset-placement-button">Reset Board</button>
+            </div>
+          </div>
         </div>
 
-        <!-- Right Board Ship Placement Container -->
-        <div id="right-board-ship-placement-container">
-          <div id="right-board-manual-placement-container">
-            <label for="right-board-manual-ship-dropdown">Ship:</label>
-            <select
-              id="right-board-manual-ship-dropdown"
-              name="right-board-manual-ship-dropdown"
-            ></select>
-            <label for="right-board-manual-coordinates-input">Coordinates:</label>
-            <input
-              type="text"
-              id="right-board-manual-coordinates-input"
-              name="right-board-manual-coordinates-input"
-              placeholder="A1"
-            />
-            <fieldset>
-              <legend>Ship Direction</legend>
-              <label for="right-board-horizontal">Horizontal</label>
-              <input
-                type="radio"
-                id="right-board-horizontal"
-                name="right-board-manual-direction-input"
-                value="horizontal"
-                checked
-              />
-              <label for="right-board-vertical">Vertical</label>
-              <input
-                type="radio"
-                id="right-board-vertical"
-                name="right-board-manual-direction-input"
-                value="vertical"
-              />
-            </fieldset>
-            <button id="right-board-manual-placement-button">Place Ship</button>
-            <div id="right-board-manual-placement-error"></div>
+        <!-- Manual Placement (Collapsible) -->
+        <details id="manual-placement-section">
+          <summary>Advanced: Manual Placement</summary>
+          <div id="manual-placement-content">
+            <div class="manual-placement-board">
+              <div class="manual-placement-board-title">Left Board Manual Placement</div>
+              <div class="manual-placement-controls">
+                <div id="left-board-manual-ship-dropdown-container">
+                  <label for="left-board-manual-ship-dropdown">Ship</label>
+                  <select id="left-board-manual-ship-dropdown"></select>
+                </div>
+
+                <div id="left-board-manual-coordinates-input-container">
+                  <label for="left-board-manual-coordinates-input">Coordinates</label>
+                  <input type="text" id="left-board-manual-coordinates-input" placeholder="A1" />
+                </div>
+
+                <fieldset class="direction-fieldset">
+                  <legend>Direction</legend>
+                  <label>
+                    <input
+                      type="radio"
+                      name="left-board-manual-direction-input"
+                      value="horizontal"
+                      checked
+                    />
+                    Horizontal
+                  </label>
+                  <label>
+                    <input type="radio" name="left-board-manual-direction-input" value="vertical" />
+                    Vertical
+                  </label>
+                </fieldset>
+
+                <button id="left-board-manual-placement-button">Place Ship</button>
+                <div id="left-board-manual-placement-error"></div>
+              </div>
+            </div>
+
+            <div class="manual-placement-board">
+              <div class="manual-placement-board-title">Right Board Manual Placement</div>
+              <div class="manual-placement-controls">
+                <div id="right-board-manual-ship-dropdown-container">
+                  <label for="right-board-manual-ship-dropdown">Ship:</label>
+                  <select id="right-board-manual-ship-dropdown"></select>
+                </div>
+
+                <div id="right-board-manual-ship-input-container">
+                  <label for="right-board-manual-coordinates-input">Coordinates:</label>
+                  <input type="text" id="right-board-manual-coordinates-input" placeholder="A1" />
+                </div>
+
+                <fieldset class="direction-fieldset">
+                  <legend>Direction</legend>
+                  <label>
+                    <input
+                      type="radio"
+                      name="right-board-manual-direction-input"
+                      value="horizontal"
+                      checked
+                    />
+                    Horizontal
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="right-board-manual-direction-input"
+                      value="vertical"
+                    />
+                    Vertical
+                  </label>
+                </fieldset>
+
+                <button id="right-board-manual-placement-button">Place Ship</button>
+                <div id="right-board-manual-placement-error"></div>
+              </div>
+            </div>
           </div>
+        </details>
+      </div>
 
-          <button id="right-board-random-placement-button">Randomly Place</button>
-
-          <button id="right-board-reset-placement-button">Reset Board</button>
+      <!-- Game Boards Container -->
+      <div id="game-boards-container">
+        <div id="left">
+          <div id="left-header">Player 1 Board</div>
+          <div id="left-board"></div>
+        </div>
+        <div id="right">
+          <div id="right-header">Player 2 (Or Computer) Board</div>
+          <div id="right-board"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Pass Device Screen -->
+    <div id="pass-device-screen" class="hidden">
+      <div id="pass-device-message"></div>
+      <button id="pass-device-continue-button">Continue</button>
     </div>
 
     <!-- Start Game Buttons Container-->

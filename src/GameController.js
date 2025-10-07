@@ -3,7 +3,7 @@ import { Player } from "./Player.js";
 import { ShipPlacementController } from "./ShipPlacementController.js";
 
 class GameController {
-  static PLAYER_TURN_DELAY_MS = 3000;
+  static PLAYER_TURN_DELAY_MS = 2000;
   static COMPUTER_TURN_DELAY_MS = 1000;
   static ASCII_OFFSET_A = 65;
 
@@ -16,6 +16,7 @@ class GameController {
     this.phase = "setup";
     this.squareEventListenersController = null;
     this.gameMode = null;
+    this.isTransitioning = false;
   }
 
   /**
@@ -108,30 +109,16 @@ class GameController {
 
     this.renderer.updateGameBoard(this.player2GameBoard, this.game.player2, false);
 
-    const draggablePlacementContainer = document.querySelector("#draggable-placement-container");
-    const leftBoardShipPlacementContainer = document.querySelector(
-      "#left-board-ship-placement-container",
-    );
-    const rightBoardShipPlacementContainer = document.querySelector(
-      "#right-board-ship-placement-container",
-    );
+    const shipPlacementContainer = document.querySelector("#ship-placement-container");
     const startGameButtonsContainer = document.querySelector("#start-game-buttons-container");
     const playingGameButtonsContainer = document.querySelector("#playing-game-buttons-container");
 
-    if (
-      !draggablePlacementContainer ||
-      !leftBoardShipPlacementContainer ||
-      !rightBoardShipPlacementContainer ||
-      !startGameButtonsContainer ||
-      !playingGameButtonsContainer
-    ) {
+    if (!shipPlacementContainer || !startGameButtonsContainer || !playingGameButtonsContainer) {
       console.error("UI Container Not Found When Starting Playing Phase.");
       return;
     }
 
-    draggablePlacementContainer.classList.add("hidden");
-    rightBoardShipPlacementContainer.classList.add("hidden");
-    leftBoardShipPlacementContainer.classList.add("hidden");
+    shipPlacementContainer.classList.add("hidden");
     startGameButtonsContainer.classList.add("hidden");
     playingGameButtonsContainer.classList.remove("hidden");
     this.updateGameStatusMessage();
@@ -150,30 +137,16 @@ class GameController {
     this.game.gameState = "running";
     this.game.winner = null;
 
-    const draggablePlacementContainer = document.querySelector("#draggable-placement-container");
-    const leftBoardShipPlacementContainer = document.querySelector(
-      "#left-board-ship-placement-container",
-    );
-    const rightBoardShipPlacementContainer = document.querySelector(
-      "#right-board-ship-placement-container",
-    );
+    const shipPlacementContainer = document.querySelector("#ship-placement-container");
     const startGameButtonsContainer = document.querySelector("#start-game-buttons-container");
     const playingGameButtonsContainer = document.querySelector("#playing-game-buttons-container");
 
-    if (
-      !draggablePlacementContainer ||
-      !leftBoardShipPlacementContainer ||
-      !rightBoardShipPlacementContainer ||
-      !startGameButtonsContainer ||
-      !playingGameButtonsContainer
-    ) {
+    if (!shipPlacementContainer || !startGameButtonsContainer || !playingGameButtonsContainer) {
       console.error("UI Container Not Found When Starting New Game.");
       return;
     }
 
-    draggablePlacementContainer.classList.remove("hidden");
-    leftBoardShipPlacementContainer.classList.remove("hidden");
-    rightBoardShipPlacementContainer.classList.remove("hidden");
+    shipPlacementContainer.classList.remove("hidden");
     startGameButtonsContainer.classList.remove("hidden");
     playingGameButtonsContainer.classList.add("hidden");
 
@@ -437,6 +410,10 @@ class GameController {
             return;
           }
 
+          if (this.isTransitioning) {
+            return;
+          }
+
           const isLeftBoard = square.closest("#left-board") !== null;
           const isRightBoard = square.closest("#right-board") !== null;
 
@@ -456,6 +433,13 @@ class GameController {
           if (result === "already-attacked") {
             return;
           } else {
+            this.isTransitioning = true;
+            if (this.game.currentPlayer === this.game.player1) {
+              this.renderer.updateOpponentGameBoard(this.player1GameBoard, this.game.player1);
+            } else if (this.game.currentPlayer === this.game.player2) {
+              this.renderer.updateOpponentGameBoard(this.player2GameBoard, this.game.player2);
+            }
+
             this.updateGameStatusMessage();
             setTimeout(() => {
               this.showPassDeviceScreen();
@@ -485,6 +469,7 @@ class GameController {
       }
 
       this.hideDeviceScreen();
+      this.isTransitioning = false;
     });
   }
 
