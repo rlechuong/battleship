@@ -521,4 +521,176 @@ describe("Game", () => {
       expect(game.canStartGame()).toBe(false);
     });
   });
+
+  describe("Player vs Player (PVP) Mode", () => {
+    describe("Game creation with two real players", () => {
+      test("should create a game with two real players", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        expect(game.player1.type).toBe("real");
+        expect(game.player2.type).toBe("real");
+        expect(game.currentPlayer.type).toBe("real");
+        expect(game.opponent.type).toBe("real");
+      });
+    });
+
+    describe("Turn processing in PvP mode", () => {
+      test("should process turn for player 1 attacking player 2", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        if (game.currentPlayer !== player1) {
+          game.switchTurn();
+        }
+
+        const ship = new Ship(3);
+        game.opponent.gameBoard.placeShip(ship, [0, 0], "horizontal");
+
+        const result = game.processTurn([0, 0]);
+
+        expect(result).toBe(true);
+        expect(game.currentPlayer).toBe(player2);
+      });
+
+      test("should process turn for player 2 attacking player 1", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        if (game.currentPlayer !== player2) {
+          game.switchTurn();
+        }
+
+        const ship = new Ship(3);
+        game.opponent.gameBoard.placeShip(ship, [0, 0], "horizontal");
+
+        const result = game.processTurn([0, 0]);
+
+        expect(result).toBe(true);
+        expect(game.currentPlayer).toBe(player1);
+      });
+
+      test("should not trigger computer AI in PvP Mode", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        if (game.currentPlayer !== player1) {
+          game.switchTurn();
+        }
+
+        game.processTurn([0, 0]);
+
+        expect(game.currentPlayer).toBe(player2);
+        expect(game.currentPlayer.type).toBe("real");
+
+        expect(player1.gameBoard.hits.size + player1.gameBoard.misses.size).toBe(0);
+      });
+
+      test("should handle multiple turns in PvP correctly", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        const ship1 = new Ship(3);
+        const ship2 = new Ship(3);
+        player1.gameBoard.placeShip(ship1, [0, 0], "horizontal");
+        player2.gameBoard.placeShip(ship2, [0, 0], "horizontal");
+
+        if (game.currentPlayer !== player1) {
+          game.switchTurn();
+        }
+
+        expect(game.currentPlayer).toBe(player1);
+        game.processTurn([4, 4]);
+        expect(game.currentPlayer).toBe(player2);
+
+        game.processTurn([4, 4]);
+        expect(game.currentPlayer).toBe(player1);
+
+        game.processTurn([2, 2]);
+        expect(game.currentPlayer).toBe(player2);
+
+        expect(player1.gameBoard.misses.size).toBe(1);
+        expect(player2.gameBoard.misses.size).toBe(2);
+      });
+    });
+
+    describe("Game end in PvP mode", () => {
+      test("should end game when player 1 sinks all of player 2's ships", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        if (game.currentPlayer !== player1) {
+          game.switchTurn();
+        }
+
+        const ship = new Ship(2);
+        player2.gameBoard.placeShip(ship, [0, 0], "horizontal");
+
+        game.processTurn([0, 0]);
+        game.switchTurn();
+        game.processTurn([0, 1]);
+
+        expect(game.gameState).toBe("ended");
+        expect(game.winner).toBe(player1);
+      });
+
+      test("should end game when player 2 sinks all of player 1's ships", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        if (game.currentPlayer !== player2) {
+          game.switchTurn();
+        }
+
+        const ship = new Ship(2);
+        player1.gameBoard.placeShip(ship, [0, 0], "horizontal");
+
+        game.processTurn([0, 0]);
+        game.switchTurn();
+        game.processTurn([0, 1]);
+
+        expect(game.gameState).toBe("ended");
+        expect(game.winner).toBe(player2);
+      });
+    });
+
+    describe("PvP Integration Test", () => {
+      test("should play through a complete PvP game correctly", () => {
+        const player1 = new Player("real");
+        const player2 = new Player("real");
+        const game = new Game(player1, player2);
+
+        const player1Ship = new Ship(2);
+        const player2Ship = new Ship(2);
+        player1.gameBoard.placeShip(player1Ship, [0, 0], "horizontal");
+        player2.gameBoard.placeShip(player2Ship, [0, 0], "horizontal");
+
+        if (game.currentPlayer !== player1) {
+          game.switchTurn();
+        }
+
+        expect(game.currentPlayer).toBe(player1);
+        expect(game.processTurn([9, 9])).toBe(false);
+        expect(game.currentPlayer).toBe(player2);
+
+        expect(game.processTurn([0, 0])).toBe(true);
+        expect(game.currentPlayer).toBe(player1);
+
+        expect(game.processTurn([0, 0])).toBe(true);
+        expect(game.currentPlayer).toBe(player2);
+
+        expect(game.processTurn([0, 1])).toBe(true);
+        expect(game.gameState).toBe("ended");
+        expect(game.winner).toBe(player2);
+        expect(player1.gameBoard.allShipsSunk()).toBe(true);
+      });
+    });
+  });
 });
