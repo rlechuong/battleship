@@ -398,6 +398,16 @@ class GameController {
     });
   }
 
+  /**
+   * Sets up click event listeners on all board squares for PvP mode.
+   * Handles attacks, prevents attacking own board, manages pass-device screen transitions,
+   * and updates board rendering.
+   * @param {HTMLElement} player1Board - Player 1's board element
+   * @param {Player} player1 - Player 1 object
+   * @param {HTMLElement} player2Board - Player 2's board element
+   * @param {Player} player2 - Player 2 object
+   * @returns {void}
+   */
   addSquareEventListenersForPvP(player1Board, player1, player2Board, player2) {
     this.squareEventListenersController = new AbortController();
     const squares = document.querySelectorAll(".game-board-square");
@@ -441,9 +451,16 @@ class GameController {
             }
 
             this.updateGameStatusMessage();
-            setTimeout(() => {
-              this.showPassDeviceScreen();
-            }, GameController.PLAYER_TURN_DELAY_MS);
+
+            if (this.game.gameState !== "ended") {
+              setTimeout(() => {
+                this.showPassDeviceScreen();
+              }, GameController.PLAYER_TURN_DELAY_MS);
+            } else {
+              this.renderer.updatePlayerGameBoard(this.player1GameBoard, this.game.player1);
+              this.renderer.updatePlayerGameBoard(this.player2GameBoard, this.game.player2);
+              this.isTransitioning = false;
+            }
           }
         },
         { signal: this.squareEventListenersController.signal },
@@ -451,6 +468,12 @@ class GameController {
     });
   }
 
+  /**
+   * Sets up the continue button on the pass-device screen. When clicked,
+   * updates game board visibility depending on the current player,
+   * then hides the pass-device screen.
+   * @returns {void}
+   */
   setUpPassDeviceButton() {
     const passDeviceContinueButton = document.querySelector("#pass-device-continue-button");
 
@@ -473,6 +496,11 @@ class GameController {
     });
   }
 
+  /**
+   * Shows the pass-device screen with a message indicating which player's turn it is.
+   * Used in PvP mode to prevent players from seeing their opponent's ship positions.
+   * @returns {void}
+   */
   showPassDeviceScreen() {
     const passDeviceScreen = document.querySelector("#pass-device-screen");
     const passDeviceMessage = document.querySelector("#pass-device-message");
@@ -491,6 +519,10 @@ class GameController {
     passDeviceScreen.classList.remove("hidden");
   }
 
+  /**
+   * Hides the pass-device screen and allows gameplay to continue.
+   * @returns {void}
+   */
   hideDeviceScreen() {
     const passDeviceScreen = document.querySelector("#pass-device-screen");
 
